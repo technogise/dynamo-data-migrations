@@ -8,7 +8,6 @@ program
     .command('init')
     .description('initialize a new migration project')
     .action(() => {
-        console.log('init');
         migr.initAction();
     });
 
