@@ -11,11 +11,11 @@ export default class create {
         }
         if (isFile) {
             try {
-                if (!fs.existsSync('./migrations')) {
-                    fs.mkdirSync('migrations');
+                if (!fs.existsSync('.setup.db/migrations')) {
+                    fs.mkdirSync('setup.db/migrations');
                 }
                 let filePath =
-                    './migrations/' +
+                    'setup.db/migrations/' +
                     new Date().getTime() +
                     (description === undefined ? '' : '_' + description) +
                     '.ts';
