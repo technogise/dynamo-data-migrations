@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 
 export default class init {
-    init() {
-        this.copyFile('./node_modules/dynamo-data-migrations/src/samples', './migrations');
+    constructor() {
+        this.copyFile('./node_modules/dynamo-data-migrations/src/samples', './setup.db');
     }
     copyFile = function (src: string, dest: string) {
         try {

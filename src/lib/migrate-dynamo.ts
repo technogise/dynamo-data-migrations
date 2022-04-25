@@ -1,8 +1,12 @@
 import init from './actions/init';
+import create from './actions/create';
 
 var initAction = function () {
-    const initaction = new init();
-    initaction.init();
+    new init();
 };
 
-export { initAction };
+var createAction = function (description: string) {
+    new create(description);
+};
+
+export { initAction, createAction };
