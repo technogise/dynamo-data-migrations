@@ -13,7 +13,9 @@
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
     "prettier": "prettier 'src/**/*.ts'",
-    "prettier:fix": "prettier --write 'src/**/*.ts'"
+    "prettier:fix": "prettier --write 'src/**/*.ts'",
+    "pre-commit": "npm run lint:fix && npm run prettier:fix && git add .",
+    "pre-push": "npm run test"
   },
   "author": "",
   "license": "MIT",
@@ -68,12 +70,6 @@
     ],
     "parserOptions": {
       "ecmaVersion": 2018
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:fix && npm run prettier:fix && git add .",
-      "pre-push": "npm run test"
     }
   },
   "jest": {
