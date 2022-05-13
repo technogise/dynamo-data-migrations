@@ -11,6 +11,13 @@ program
         migr.initAction();
     });
 
+program
+    .command('create [description]')
+    .description('create a new database migration with the provided description')
+    .action((description) => {
+        migr.createAction(description);
+    });
+
 program.version(pkgjson.version);
 
 program.parse(process.argv);
