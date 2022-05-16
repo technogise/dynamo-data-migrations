@@ -6,7 +6,7 @@ export function create(description: string) {
         const stats = fs.statSync('./setup.db/config.ts');
         isFile = stats.isFile();
     } catch {
-        console.info('No config.js file found, Please run the init command first');
+        console.info('No config.ts file found, Please run the init command first');
     }
     if (isFile) {
         try {
