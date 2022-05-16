@@ -37,10 +37,8 @@
   "dependencies": {
     "aws-sdk": "^2.1113.0",
     "commander": "^9.1.0",
-    "fork-ts-checker-webpack-plugin": "^7.2.11",
-    "fs-extra": "^9.0.13",
-    "lodash": "^4.17.21",
-    "terser-webpack-plugin": "^5.3.1"
+    "fs-extra": "^10.1.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.55.0",

@@ -1,6 +1,5 @@
-import { Init } from './actions/init';
+import { init } from './actions/init';
 
 export const initAction = () => {
-    const initObject = new Init();
-    initObject.init();
+    init();
 };
