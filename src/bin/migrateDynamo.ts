@@ -2,7 +2,7 @@
 import { program } from 'commander';
 import { isEmpty } from 'lodash';
 import packageJson from '../../package.json';
-import { initAction } from '../lib/migrateDynamo';
+import { initAction,createAction } from '../lib/migrateDynamo';
 
 program
     .command('init')
@@ -10,6 +10,14 @@ program
     .action(() => {
         initAction();
     });
+
+program
+    .command('create [description]')
+    .description('create a new database migration with the provided description')
+    .action((description) => {
+        createAction(description);
+    });
+
 
 program.version(packageJson.version);
 
