@@ -1,5 +1,6 @@
 {
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src"],
+  "exclude": ["node_modules", "tests/*"],
   "compilerOptions": {
     "experimentalDecorators": true,
     "allowJs": true,
@@ -13,9 +14,9 @@
     "emitDecoratorMetadata": true,
     "sourceMap": true,
     "strict": true,
-    "noEmit": true,
     "forceConsistentCasingInFileNames": true,
      "noImplicitAny": true,
      "strictFunctionTypes": true,
+    "outDir": "./build",
   },
 }

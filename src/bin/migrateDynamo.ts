@@ -15,6 +15,6 @@ program.version(packageJson.version);
 
 program.parse(process.argv);
 
-if (isEmpty(program.rawArgs)) {
+if (isEmpty(program.args)) {
     program.outputHelp();
 }
