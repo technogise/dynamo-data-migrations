@@ -2,15 +2,23 @@
   "name": "dynamo-data-migrations",
   "version": "1.0.0",
   "description": "A library to easily run migrations on DynamoDb with TypeScript.",
-  "main": "src/lib/migrate-dynamo.js",
+  "main": "build/src/bin/migrateDynamo.js",
+  "types": "build/src/bin/migrateDynamo.d.ts",
   "bin": {
-    "dynamo-data-migrations": "src/bin/migrate-dynamo.js"
+    "dynamo-data-migrations": "build/src/bin/migrateDynamo.js"
   },
   "scripts": {
-    "build": "npx tsc |./node_modules/.bin/prettier --write './src/**/*.{ts,js}'",
     "check-types": "tsc --noEmit",
+    "build": "tsc",
+    "test": "jest --coverage --color --runInBand --silent",
     "lint": "eslint --ext .ts .",
-    "lint:fix": "eslint --ext .ts . --fix"
+    "lint:fix": "eslint --ext .ts . --fix",
+    "prettier": "prettier 'src/**/*.ts'",
+    "prettier:fix": "prettier --write 'src/**/*.ts'",
+    "pre-commit": "npm run check-types && npm run lint:fix && npm run prettier:fix && git add .",
+    "pre-push": "npm run test",
+    "prepare": "npm run build && husky install",
+    "prepublishOnly": "npm test && npm run lint"
   },
   "author": "",
   "license": "MIT",
@@ -35,8 +43,23 @@
   "devDependencies": {
     "@aws-sdk/types": "^3.55.0",
     "@types/fs-extra": "^9.0.13",
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^17.0.23",
-    "eslint": "^8.13.0",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^7.28.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-formatter-pretty": "^4.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.20.5",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "eslint-plugin-unicorn": "^33.0.1",
+    "husky": "^8.0.0",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4",
@@ -53,5 +76,29 @@
     "parserOptions": {
       "ecmaVersion": 2018
     }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "rootDir": ".",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "collectCoverage": false,
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90
+      }
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/__jest__/setup.ts"
+    ],
+    "silent": true
   }
 }
