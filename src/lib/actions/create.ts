@@ -13,13 +13,11 @@ export function create(description: string) {
             if (!fs.existsSync('setup.db/migrations')) {
                 fs.mkdirSync('setup.db/migrations');
             }
-            const filePath =
-                `setup.db/migrations/${ 
-                Date.now() 
-                }${description === undefined ? '' : `_${  description}` 
-                }.ts`;
-            fs.createFile(filePath,  (err) => {
-                if (err) throw err;
+            const filePath = `setup.db/migrations/${Date.now()}${
+                description === undefined ? '' : `_${description}`
+            }.ts`;
+            fs.createFile(filePath, (error) => {
+                if (error) throw error;
                 console.info('File is created successfully.');
             });
         } catch (error) {

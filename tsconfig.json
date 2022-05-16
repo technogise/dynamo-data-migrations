@@ -1,9 +1,9 @@
 {
   "include": ["src"],
-  "exclude": ["node_modules", "tests/*"],
+  "exclude": ["node_modules", "tests/**/*"],
   "compilerOptions": {
     "experimentalDecorators": true,
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "target": "es2018",
     "module": "commonjs",
