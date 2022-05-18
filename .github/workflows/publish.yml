@@ -4,8 +4,6 @@
 name: Npm Publish
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -29,14 +27,6 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
     - name: Install dependencies    
       run: npm ci
-    - name: Set Git Credentials email
-      run: git config --global user.email "rishabhjaiswal225499@gmail.com"
-    - name: Set git user name
-      run:  git config --local user.name "Rishabh Jaiswal"
-    - name: Versioning
-      run: npm version patch
-    - name: Push
-      run: git push
     - name: Build
       run: npm run build --if-present
     - name: Prettier
