@@ -1,0 +1,35 @@
+name: Npm Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [ubuntu-latest]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        registry-url: 'https://registry.npmjs.org'
+    - name: Install dependencies    
+      run: npm ci
+    - name: Build
+      run: npm run build --if-present
+    - name: Prettier
+      run: npm run prettier:fix
+    - name: publish
+      run: npm publish --access public
+      env: 
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
