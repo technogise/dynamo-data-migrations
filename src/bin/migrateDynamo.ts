@@ -2,7 +2,7 @@
 import { program } from 'commander';
 import { isEmpty } from 'lodash';
 import packageJson from '../../package.json';
-import { initAction,createAction } from '../lib/migrateDynamo';
+import { initAction, createAction } from '../lib/migrateDynamo';
 
 program
     .command('init')
@@ -17,7 +17,6 @@ program
     .action((description) => {
         createAction(description);
     });
-
 
 program.version(packageJson.version);
 

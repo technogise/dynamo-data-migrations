@@ -1,6 +1,6 @@
 {
-  "include": ["src"],
-  "exclude": ["node_modules", "tests/**/*"],
+  "include": ["src","tests"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "experimentalDecorators": true,
     "allowJs": false,
