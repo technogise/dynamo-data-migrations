@@ -1,7 +1,7 @@
 name: Npm Publish
 
 on:
-  push:
+  pull_request:
     branches: [ master ]
 
 jobs:
@@ -28,6 +28,8 @@ jobs:
       run: npm run build --if-present
     - name: Prettier
       run: npm run prettier:fix
+    - name: Test
+      run: npm test  
     #- name: Publish
     #  run: npm publish --access public// no publish for now
     #  env: 
