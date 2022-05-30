@@ -1,4 +1,4 @@
-name: Npm Publish
+name: Validate PR
 
 on:
   pull_request:
