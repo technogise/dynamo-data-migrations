@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  publish:
+  validate:
 
     runs-on: ${{matrix.os}}
 
@@ -30,7 +30,3 @@ jobs:
       run: npm run prettier:fix
     - name: Test
       run: npm test  
-    #- name: Publish
-    #  run: npm publish --access public// no publish for now
-    #  env: 
-    #      NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
