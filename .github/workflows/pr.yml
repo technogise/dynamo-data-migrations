@@ -1,11 +1,11 @@
-name: Validate PR
+name: Build and Test
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  validate:
+  build_and_test:
 
     runs-on: ${{matrix.os}}
 
@@ -25,8 +25,6 @@ jobs:
     - name: Install dependencies    
       run: npm ci
     - name: Build  
-      run: npm run build --if-present
-    - name: Prettier
-      run: npm run prettier:fix
+      run: npm run build
     - name: Test
       run: npm test  
