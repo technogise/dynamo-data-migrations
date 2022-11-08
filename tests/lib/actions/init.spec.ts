@@ -24,7 +24,7 @@ describe("init",()=>{
 
     });
 
-    it("should copy the sample config file to the setup.db", ()=>{
+    /* it("should copy the sample config file to the setup.db", ()=>{
         copySampleConfigFile();
         // expect(fs.copySync.called).to.equal(true);
         // expect(fs.copySync.callCount).to.equal(1);
@@ -46,4 +46,6 @@ describe("init",()=>{
     //       expect(err.message).to.equal("I cannot do that");
     //     }
     // });
+    */
 })
+
