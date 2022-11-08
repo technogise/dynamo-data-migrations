@@ -18,6 +18,9 @@ export function create(description: string) {
             }.ts`;
             fs.createFile(filePath, (error) => {
                 if (error) throw error;
+
+                fs.copyFileSync('./node_modules/dynamo-data-migrations/src/samples/migration.ts', filePath);
+
                 console.info('File is created successfully.');
             });
         } catch (error) {

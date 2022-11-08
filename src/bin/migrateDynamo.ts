@@ -9,6 +9,7 @@ program
     .description('initialize a new migration project')
     .action(() => {
         initAction();
+        console.info('Initialization successful. Please edit the generated config.ts file');
     });
 
 program
