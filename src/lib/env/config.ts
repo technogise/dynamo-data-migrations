@@ -15,13 +15,13 @@ function getConfigPath() {
     // const fileOptionValue = get(global.options, 'file');
     const fileOptionValue = null;
     if (!fileOptionValue) {
-        return path.join(process.cwd(), DEFAULT_CONFIG_FILE_NAME);
+        return path.join(process.cwd(), `setup.db/${DEFAULT_CONFIG_FILE_NAME}`);
     }
 
     if (path.isAbsolute(fileOptionValue)) {
         return fileOptionValue;
     }
-    return path.join(process.cwd(), fileOptionValue);
+    return path.join(process.cwd(), `setup.db/${fileOptionValue}`);
 }
 
 export async function shouldNotExist() {
@@ -46,5 +46,5 @@ export async function read() {
     }
     const configPath = getConfigPath();
     const loadedImport = await moduleLoader.importFile(url.pathToFileURL(configPath).pathname);
-    return loadedImport.default;
+    return loadedImport;
 }

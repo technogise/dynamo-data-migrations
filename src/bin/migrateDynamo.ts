@@ -19,8 +19,13 @@ program
 program
     .command('create [description]')
     .description('create a new database migration with the provided description')
-    .action((description) => {
-        createAction(description);
+    .action(async (description) => {
+        try {
+            const fileName = await createAction(description);
+            console.info(`Created: migrations/${fileName}`);
+        } catch (error) {
+            console.error(error);
+        }
     });
 
 program.version(packageJson.version);
