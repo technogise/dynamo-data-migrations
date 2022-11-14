@@ -2,7 +2,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 import path from "path";
 import proxyquire from "proxyquire";
-import { copySampleConfigFile } from "../../../src/lib/actions/init";
+// import { copySampleConfigFile } from "../../../src/lib/actions/init";
 
 function mockFs(){
     return {

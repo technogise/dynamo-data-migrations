@@ -1,22 +1,24 @@
 import fs from 'fs-extra';
+import path from 'path';
 
-export function copySampleConfigFile() {
-    try {
-        fs.copySync('./node_modules/dynamo-data-migrations/src/samples/config.ts', './setup.db/config.ts');
-    } catch (error) {
-        console.error(error);
-    }
+import * as migrationsDir from '../env/migrationsDir';
+import * as config from '../env/config';
+
+function copySampleConfigFile() {
+    // const source = path.join(__dirname, `../../samples/config.js`);
+    const source = './node_modules/dynamo-data-migrations/src/samples/config.ts';
+    const destination = path.join(process.cwd(), `setup.db/${config.DEFAULT_CONFIG_FILE_NAME}`);
+    return fs.copy(source, destination);
 }
 
-export function createMigrationsDirectory() {
-    try {
-        fs.mkdir('setup.db/migrations');
-    } catch (error) {
-        console.error(error);
-    }
+function createMigrationsDirectory() {
+    return fs.mkdirs(path.join(process.cwd(), `setup.db/${migrationsDir.DEFAULT_MIGRATIONS_DIR_NAME}`));
 }
 
-// module.exports = () => {
-//     copySampleConfigFile();
-//     return createMigrationsDirectory();
-// };
+export async function init() {
+    await migrationsDir.shouldNotExist();
+    await config.shouldNotExist();
+
+    await copySampleConfigFile();
+    return createMigrationsDirectory();
+}

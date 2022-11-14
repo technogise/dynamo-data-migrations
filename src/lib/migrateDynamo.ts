@@ -1,12 +1,8 @@
-// import { init } from './actions/init';
-import { copySampleConfigFile, createMigrationsDirectory } from './actions/init';
-// const init = require('./actions/init');
-// import { create } from './actions/create';
+import { init } from './actions/init';
 import { create } from './actions/create';
 
 export const initAction = () => {
-    copySampleConfigFile();
-    createMigrationsDirectory();
+    init();
 };
 
 export const createAction = (description: string) => {

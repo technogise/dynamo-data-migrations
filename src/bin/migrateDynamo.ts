@@ -7,9 +7,13 @@ import { initAction, createAction } from '../lib/migrateDynamo';
 program
     .command('init')
     .description('initialize a new migration project')
-    .action(() => {
-        initAction();
-        console.info('Initialization successful. Please edit the generated config.ts file');
+    .action(async () => {
+        try {
+            await initAction();
+            console.info('Initialization successful. Please edit the generated config.ts file');
+        } catch (error) {
+            console.error(error);
+        }
     });
 
 program
