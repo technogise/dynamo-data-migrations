@@ -44,7 +44,7 @@ export async function create(description: string) {
 
     const source = (await migrationsDir.doesSampleMigrationExist())
         ? await migrationsDir.resolveSampleMigrationPath()
-        : './node_modules/dynamo-data-migrations/src/samples/config.ts';
+        : './node_modules/dynamo-data-migrations/src/samples/migration.ts';
 
     const filename = `${Date.now()}-${description.split(' ').join('_')}.ts`;
     const destination = path.join(migrationsDirPath, filename);

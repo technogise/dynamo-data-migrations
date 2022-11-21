@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 import url from 'url';
 import path from 'path';
 import { get } from 'lodash';
@@ -12,16 +12,7 @@ const customConfigContent: CONFIG = {};
 export const DEFAULT_CONFIG_FILE_NAME = 'config.ts';
 
 function getConfigPath() {
-    // const fileOptionValue = get(global.options, 'file');
-    const fileOptionValue = null;
-    if (!fileOptionValue) {
-        return path.join(process.cwd(), `setup.db/${DEFAULT_CONFIG_FILE_NAME}`);
-    }
-
-    if (path.isAbsolute(fileOptionValue)) {
-        return fileOptionValue;
-    }
-    return path.join(process.cwd(), `setup.db/${fileOptionValue}`);
+    return path.join(process.cwd(), `setup.db/${DEFAULT_CONFIG_FILE_NAME}`);
 }
 
 export async function shouldNotExist() {
@@ -29,7 +20,7 @@ export async function shouldNotExist() {
         const configPath = getConfigPath();
         const error = new Error(`config file already exists: ${configPath}`);
         try {
-            fs.statSync(configPath);
+            await fs.stat(configPath);
             throw error;
         } catch (error_) {
             const e = error_ as ERROR;

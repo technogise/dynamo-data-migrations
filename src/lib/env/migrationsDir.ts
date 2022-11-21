@@ -6,24 +6,7 @@ export const DEFAULT_MIGRATIONS_DIR_NAME = 'migrations';
 type ERROR = { errno: number; syscall: string; code: string; path: string };
 
 export async function resolveMigrationsDirPath() {
-    let migrationsDir;
-    try {
-        const configContent = await config.read();
-        // migrationsDir = configContent.migrationsDir;
-        migrationsDir = null;
-        // if config file doesn't have migrationsDir key, assume default 'migrations' dir
-        if (!migrationsDir) {
-            migrationsDir = DEFAULT_MIGRATIONS_DIR_NAME;
-        }
-    } catch {
-        // config file could not be read, assume default 'migrations' dir
-        migrationsDir = DEFAULT_MIGRATIONS_DIR_NAME;
-    }
-
-    if (path.isAbsolute(migrationsDir)) {
-        return migrationsDir;
-    }
-    return path.join(process.cwd(), `setup.db/${migrationsDir}`);
+    return path.join(process.cwd(), `setup.db/${DEFAULT_MIGRATIONS_DIR_NAME}`);
 }
 
 async function resolveSampleMigrationFileName() {
@@ -68,4 +51,10 @@ export async function doesSampleMigrationExist() {
     } catch {
         return false;
     }
+}
+
+export async function getFileNames() {
+    const migrationsDir = await resolveMigrationsDirPath();
+    const files = await fs.readdir(migrationsDir);
+    return files.sort();
 }
