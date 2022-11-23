@@ -78,6 +78,9 @@
     }
   },
   "jest": {
+    "testMatch":[
+      "**/tests/**/*.spec.ts"
+    ],
     "moduleFileExtensions": [
       "ts",
       "js",
@@ -85,7 +88,7 @@
     ],
     "rootDir": ".",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t)s$": "ts-jest"
     },
     "testEnvironment": "node",
     "collectCoverage": false,

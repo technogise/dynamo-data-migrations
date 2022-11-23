@@ -32,9 +32,9 @@ export async function shouldNotExist() {
 }
 
 export async function read() {
-    if (Object.keys(customConfigContent).length > 0) {
-        return customConfigContent;
-    }
+    // if (Object.keys(customConfigContent).length > 0) {
+    //     return customConfigContent;
+    // }
     const configPath = getConfigPath();
     const loadedImport = await moduleLoader.importFile(url.pathToFileURL(configPath).pathname);
     return loadedImport;
