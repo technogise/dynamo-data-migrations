@@ -21,8 +21,8 @@ program
     .description('create a new database migration with the provided description')
     .action(async (description) => {
         try {
-            const fileName = await createAction(description);
-            console.info(`Created: migrations/${fileName}`);
+            const message = await createAction(description);
+            console.info(message);
         } catch (error) {
             console.error(error);
         }

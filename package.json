@@ -38,7 +38,8 @@
     "aws-sdk": "^2.1113.0",
     "commander": "^9.1.0",
     "fs-extra": "^10.1.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "ts-import": "^4.0.0-beta.8"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.55.0",
@@ -78,7 +79,7 @@
     }
   },
   "jest": {
-    "testMatch":[
+    "testMatch": [
       "**/tests/**/*.spec.ts"
     ],
     "moduleFileExtensions": [
