@@ -8,12 +8,10 @@ type ERROR = { errno: number; syscall: string; code: string; path: string };
 describe("migrationsDir",()=>{
     let fsStat;
     let fsReaddir;
-    let fsReadFile;
     let moduleLoaderImportFile;
     beforeEach(()=>{
         fsStat = jest.spyOn(fs,"stat");
         fsReaddir = jest.spyOn(fs,"readdir");
-        fsReadFile = jest.spyOn(fs,"readdir");
         moduleLoaderImportFile = jest.spyOn(moduleLoader,"importFile");
     });
 
