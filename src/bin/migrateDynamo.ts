@@ -2,7 +2,7 @@
 import { program } from 'commander';
 import { isEmpty } from 'lodash';
 import packageJson from '../../package.json';
-import { initAction, createAction } from '../lib/migrateDynamo';
+import { initAction, createAction, upAction } from '../lib/migrateDynamo';
 
 program
     .command('init')
@@ -23,6 +23,17 @@ program
         try {
             const message = await createAction(description);
             console.info(message);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+program
+    .command('up')
+    .description('run all pending database migrations')
+    .action(async () => {
+        try {
+            await upAction();
         } catch (error) {
             console.error(error);
         }

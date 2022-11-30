@@ -15,18 +15,25 @@ function getConfigPath() {
     return path.join(process.cwd(), `setup.db/${DEFAULT_CONFIG_FILE_NAME}`);
 }
 
+export async function shouldExist() {
+    const configPath = getConfigPath();
+    try {
+        await fs.stat(configPath);
+    } catch {
+        throw new Error(`config file does not exist: ${configPath}`);
+    }
+}
+
 export async function shouldNotExist() {
-    if (Object.keys(customConfigContent).length === 0) {
-        const configPath = getConfigPath();
-        const error = new Error(`config file already exists: ${configPath}`);
-        try {
-            await fs.stat(configPath);
+    const configPath = getConfigPath();
+    const error = new Error(`config file already exists: ${configPath}`);
+    try {
+        await fs.stat(configPath);
+        throw error;
+    } catch (error_) {
+        const e = error_ as ERROR;
+        if (e.code !== 'ENOENT') {
             throw error;
-        } catch (error_) {
-            const e = error_ as ERROR;
-            if (e.code !== 'ENOENT') {
-                throw error;
-            }
         }
     }
 }
