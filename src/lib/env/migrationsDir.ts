@@ -52,3 +52,9 @@ export async function doesSampleMigrationExist() {
         return false;
     }
 }
+
+export async function getFileNames() {
+    const migrationsDir = await resolveMigrationsDirPath();
+    const files = await fs.readdir(migrationsDir);
+    return files.sort();
+}

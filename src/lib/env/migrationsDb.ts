@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import { Key } from 'aws-sdk/clients/dynamodb';
 import * as config from './config';
 
 async function getDdb() {
@@ -65,7 +66,7 @@ export async function addMigrationToMigrationsLogDb(filename: string) {
         TableName: 'MIGRATIONS_LOG_DB',
         Item: {
             FILE_NAME: { S: filename },
-            APPLIED_AT: { S: 'PENDING' },
+            APPLIED_AT: { S: new Date().toString() },
         },
     };
 
@@ -98,4 +99,33 @@ export async function doesMigrationsLogDbExists() {
             }
         });
     });
+}
+
+export async function getAllMigrations() {
+    const ddb = await getDdb();
+
+    const migrations: { FILE_NAME?: string; APPLIED_AT?: string }[] = [];
+    const items: AWS.DynamoDB.AttributeMap[] = [];
+    const recursiveProcess = async (lastEvaluatedKey?: Key) => {
+        const params = {
+            TableName: 'MIGRATIONS_LOG_DB',
+            ExclusiveStartKey: lastEvaluatedKey,
+        };
+
+        const { Items, LastEvaluatedKey } = await ddb.scan(params).promise();
+        if (Items)
+            migrations.push(
+                ...Items.map((item) => {
+                    return {
+                        FILE_NAME: item.FILE_NAME.S,
+                        APPLIED_AT: item.APPLIED_AT.S,
+                    };
+                }),
+            );
+
+        if (LastEvaluatedKey) await recursiveProcess(LastEvaluatedKey);
+    };
+
+    await recursiveProcess();
+    return migrations;
 }

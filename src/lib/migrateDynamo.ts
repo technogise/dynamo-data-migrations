@@ -1,6 +1,6 @@
 import { init } from './actions/init';
 import { create } from './actions/create';
-import { up } from '../samples/migration';
+import { up } from './actions/up';
 
 export const initAction = async () => {
     return init();
