@@ -10,7 +10,6 @@ describe("create",()=>{
     let migrationsDirResolveMigrationsDirPath: { mockRestore: () => void; };
     let migrationsDbDoesMigrationsLogDbExists: { mockRestore: () => void; };
     let migrationsDbConfigureMigrationsLogDbSchema: { mockRestore: () => void; };
-    let migrationsDbAddMigrationToMigrationsLogDb: { mockRestore: () => void; };
     let fsCopyFile: { mockRestore: () => void; };
     
     beforeEach(async()=>{
@@ -18,7 +17,6 @@ describe("create",()=>{
         migrationsDirResolveMigrationsDirPath = jest.spyOn(migrationsDir,"resolveMigrationsDirPath").mockReturnValue(Promise.resolve("setup.db/migrations"));
         migrationsDbDoesMigrationsLogDbExists = jest.spyOn(migrationsDb,"doesMigrationsLogDbExists").mockReturnValue(Promise.resolve());
         migrationsDbConfigureMigrationsLogDbSchema = jest.spyOn(migrationsDb,"configureMigrationsLogDbSchema").mockReturnValue(Promise.resolve());
-        migrationsDbAddMigrationToMigrationsLogDb = jest.spyOn(migrationsDb,"addMigrationToMigrationsLogDb").mockReturnValue(Promise.resolve());
         fsCopyFile = jest.spyOn(fs,"copyFile").mockReturnValue();
     });
 
@@ -27,7 +25,6 @@ describe("create",()=>{
         migrationsDirResolveMigrationsDirPath.mockRestore();
         migrationsDbDoesMigrationsLogDbExists.mockRestore();
         migrationsDbConfigureMigrationsLogDbSchema.mockRestore();
-        migrationsDbAddMigrationToMigrationsLogDb.mockRestore();
         fsCopyFile.mockRestore();
     })
 
@@ -67,31 +64,21 @@ describe("create",()=>{
         expect(configureMigrationsLogDbSchema).toBeCalled();
     });
 
-    it("should add migrations to migrationsLogDb", async()=>{
-        const addMigrationToMigrationsLogDb = jest.spyOn(migrationsDb,"addMigrationToMigrationsLogDb");
+    it("should copy the sample migrations to the migrations directory",async()=>{
+        const copyFile = jest.spyOn(fs,"copyFile");
         await create("my_description");
-        expect(addMigrationToMigrationsLogDb).toBeCalled();
-    });
-
-    it("should not ask to run command again when ResourceNotFoundException occurs adding migrations to migrationsLogDb",async()=>{
-        jest.spyOn(migrationsDb,"addMigrationToMigrationsLogDb").mockImplementation(()=>{
-            const error = new Error("Requested resource not found");
-            error.name = "ResourceNotFoundException";
-            throw error;
-        });
-
-        const message = await create("my_description");
-        expect(message).toEqual("Could not create migration.. Please run command again");
-    });
-
-    it("should throw error if error is not ResourceNotFoundException while calling addMigrationToMigrationsLogDb()", async()=>{
-        jest.spyOn(migrationsDb,"addMigrationToMigrationsLogDb").mockImplementation(()=>{
-            const error = new Error("someOtherError");
-            error.name = "someOtherError"
-            throw error;
-        });
-
-        await expect(create("my_description")).rejects.toThrow("someOtherError");        
+        const source = "./node_modules/dynamo-data-migrations/src/samples/migration.ts"
+        const filename = `${Date.now()}-${"my_description".split(' ').join('_')}.ts`;
+        const destination = path.join("setup.db/migrations", filename);
+        
+        expect(copyFile).toBeCalledWith(source,destination);
     })
+
+    it("should return a message when migrations are created",async()=>{
+        const message = await create("my_description");
+        const filename = `${Date.now()}-${"my_description".split(' ').join('_')}.ts`;
+        
+        expect(message).toBe(`Created: migrations/${filename}`);
+    });
 
 })
