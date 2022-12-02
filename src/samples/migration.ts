@@ -1,7 +1,7 @@
-export async function up() {
+export async function up(ddb: AWS.DynamoDB) {
     // TODO write your migration here.
 }
 
-export async function down() {
+export async function down(ddb: AWS.DynamoDB) {
     // TODO write the statements to rollback your migration (if possible)
 }
