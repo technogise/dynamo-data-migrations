@@ -60,13 +60,13 @@ export async function configureMigrationsLogDbSchema() {
     });
 }
 
-export async function addMigrationToMigrationsLogDb(filename: string) {
+export async function addMigrationToMigrationsLogDb(item: { fileName: string; appliedAt: string }) {
     const ddb = await getDdb();
     const params = {
         TableName: 'MIGRATIONS_LOG_DB',
         Item: {
-            FILE_NAME: { S: filename },
-            APPLIED_AT: { S: new Date().toString() },
+            FILE_NAME: { S: item.fileName },
+            APPLIED_AT: { S: item.appliedAt },
         },
     };
 

@@ -40,7 +40,8 @@ describe("migrationsDb",()=>{
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
-            await migrationsDb.addMigrationToMigrationsLogDb("abc.ts");
+
+            await migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" });
             AWSMock.restore('DynamoDB')
         })
 
@@ -49,7 +50,7 @@ describe("migrationsDb",()=>{
                 callback(new Error("Resource Not Found"), null);
             })
 
-            await expect(migrationsDb.addMigrationToMigrationsLogDb("abc.ts")).rejects.toThrow("Resource Not Found");
+            await expect(migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" })).rejects.toThrow("Resource Not Found");
             AWSMock.restore('DynamoDB')
         })
     })
