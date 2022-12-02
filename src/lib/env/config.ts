@@ -44,5 +44,5 @@ export async function read() {
     // }
     const configPath = getConfigPath();
     const loadedImport = await moduleLoader.importFile(url.pathToFileURL(configPath).pathname);
-    return loadedImport;
+    return loadedImport.awsConfig;
 }

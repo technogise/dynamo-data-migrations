@@ -1,8 +1,18 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import { isEmpty } from 'lodash';
+import Table from 'cli-table3';
+import _, { isEmpty } from 'lodash';
 import packageJson from '../../package.json';
 import { initAction, createAction, upAction } from '../lib/migrateDynamo';
+
+class ERROR extends Error {
+    migrated?: string[];
+}
+
+function printMigrated(migrated: string[] = []) {
+    const migratedItemsInfo: string = migrated.map((item) => `MIGRATED UP: ${item}`).join('\n');
+    console.info(migratedItemsInfo);
+}
 
 program
     .command('init')
@@ -33,9 +43,12 @@ program
     .description('run all pending database migrations')
     .action(async () => {
         try {
-            await upAction();
+            const migrated = await upAction();
+            printMigrated(migrated);
         } catch (error) {
             console.error(error);
+            const e = error as ERROR;
+            printMigrated(e.migrated);
         }
     });
 
