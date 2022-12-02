@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 import { Key } from 'aws-sdk/clients/dynamodb';
 import * as config from './config';
 
-async function getDdb() {
+export async function getDdb() {
     const awsConfig = await config.read();
     const awsCredentials = {
         region: awsConfig.region,

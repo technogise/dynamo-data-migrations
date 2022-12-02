@@ -18,7 +18,8 @@ export async function up() {
         try {
             const migration = await migrationsDir.loadMigration(item.fileName);
             const migrationUp = migration.up;
-            await migrationUp();
+            const ddb = await migrationsDb.getDdb();
+            await migrationUp(ddb);
         } catch (error_) {
             const e = error_ as Error;
             const error = new ERROR(`Could not migrate up ${item.fileName}: ${e.message}`);
