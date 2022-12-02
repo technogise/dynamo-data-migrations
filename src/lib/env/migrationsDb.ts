@@ -105,7 +105,6 @@ export async function getAllMigrations() {
     const ddb = await getDdb();
 
     const migrations: { FILE_NAME?: string; APPLIED_AT?: string }[] = [];
-    const items: AWS.DynamoDB.AttributeMap[] = [];
     const recursiveProcess = async (lastEvaluatedKey?: Key) => {
         const params = {
             TableName: 'MIGRATIONS_LOG_DB',

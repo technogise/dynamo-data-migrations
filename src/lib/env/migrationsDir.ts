@@ -1,6 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
+import url from 'url';
 import * as config from './config';
+import * as moduleLoader from '../utils/moduleLoader';
 
 export const DEFAULT_MIGRATIONS_DIR_NAME = 'migrations';
 type ERROR = { errno: number; syscall: string; code: string; path: string };
@@ -57,4 +59,10 @@ export async function getFileNames() {
     const migrationsDir = await resolveMigrationsDirPath();
     const files = await fs.readdir(migrationsDir);
     return files.sort();
+}
+
+export async function loadMigration(fileName: string) {
+    const migrationsDir = await resolveMigrationsDirPath();
+    const migrationPath = path.join(migrationsDir, fileName);
+    return moduleLoader.importFile(url.pathToFileURL(migrationPath).pathname);
 }

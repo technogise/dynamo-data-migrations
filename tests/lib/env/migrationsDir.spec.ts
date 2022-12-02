@@ -104,4 +104,14 @@ describe("migrationsDir",()=>{
             ]);
         });
     })
+
+    describe("loadMigration()",()=>{
+        it("should attempt to read the migration file",async()=>{
+            const migrationsPath = path.join(process.cwd(),"setup.db/migrations/abc.ts");
+            jest.spyOn(moduleLoader,"importFile").mockImplementation(()=>{
+                throw new Error(`Cannot find module '${migrationsPath}'`);
+            });
+            await expect(migrationsDir.loadMigration("abc.ts")).rejects.toThrow(`Cannot find module '${migrationsPath}'`);
+        })
+    })
 })
