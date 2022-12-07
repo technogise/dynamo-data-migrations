@@ -1,6 +1,7 @@
 import { init } from './actions/init';
 import { create } from './actions/create';
 import { up } from './actions/up';
+import { status } from './actions/status';
 
 export const initAction = async () => {
     return init();
@@ -12,4 +13,8 @@ export const createAction = async (description: string) => {
 
 export const upAction = async () => {
     return up();
+};
+
+export const statusAction = async () => {
+    return status();
 };
