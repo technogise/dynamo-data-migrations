@@ -30,7 +30,7 @@ export async function up() {
 
         const migration = {
             fileName: item.fileName,
-            appliedAt: new Date().toString(),
+            appliedAt: new Date().toJSON(),
         };
 
         try {

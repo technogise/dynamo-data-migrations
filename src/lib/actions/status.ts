@@ -15,7 +15,7 @@ export async function status() {
         fileNames.map(async (fileName) => {
             const findTest = { FILE_NAME: fileName };
             const itemInLog: any = find(migrationsLog, findTest);
-            const appliedAt = itemInLog ? new Date(itemInLog.APPLIED_AT).toJSON() : 'PENDING';
+            const appliedAt = itemInLog ? itemInLog.APPLIED_AT : 'PENDING';
             return { fileName, appliedAt };
         }),
     );

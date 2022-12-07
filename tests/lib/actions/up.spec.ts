@@ -18,11 +18,11 @@ describe("up",()=>{
         statusModuleStatus = jest.spyOn(statusModule,"status").mockReturnValue(
           Promise.resolve([{
             fileName: "20160605123224-first_applied_migration.ts",
-            appliedAt: new Date().toString()
+            appliedAt: new Date().toJSON()
           },
           {
             fileName: "20160606093207-second_applied_migration.ts",
-            appliedAt: new Date().toString()
+            appliedAt: new Date().toJSON()
           },
           {
             fileName: "20160607173840-first_pending_migration.ts",
@@ -89,7 +89,7 @@ describe("up",()=>{
       expect(migrationsDbAddMigrationToMigrationsLogDb).toBeCalled();
       expect(migrationsDbAddMigrationToMigrationsLogDb).toBeCalledTimes(2);
       expect(migrationsDbAddMigrationToMigrationsLogDb).nthCalledWith(1,{
-        appliedAt: new Date("2016-06-09T08:07:00.077Z").toString(),
+        appliedAt: new Date("2016-06-09T08:07:00.077Z").toJSON(),
         fileName: "20160607173840-first_pending_migration.ts"
       });
       clock.restore();
