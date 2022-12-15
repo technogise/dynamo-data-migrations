@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import AWSMock from 'aws-sdk-mock';
-import { CreateTableInput,PutItemInput,DescribeTableInput, ScanInput, ItemList } from 'aws-sdk/clients/dynamodb';
+import { CreateTableInput,PutItemInput,DescribeTableInput, ScanInput, ItemList, DeleteItemInput } from 'aws-sdk/clients/dynamodb';
 import sinon from 'sinon';
 
 import * as migrationsDb from "../../../src/lib/env/migrationsDb";
@@ -54,6 +54,34 @@ describe("migrationsDb",()=>{
 
             await expect(migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" })).rejects.toThrow("Resource Not Found");
             AWSMock.restore('DynamoDB')
+        })
+    })
+
+    describe("deleteMigrationFromMigrationsLogDb()",()=>{
+        it("should resolve when no errors are thrown while deleting migration",async()=>{
+            AWSMock.mock('DynamoDB', 'deleteItem', (params: DeleteItemInput, callback: any) => {
+                callback(null, { pk: 'foo', sk: 'bar' });
+            })
+
+            const item: { fileName: string; appliedAt: string } = {
+                fileName:"123.ts",
+                appliedAt:"123"
+            };
+            await migrationsDb.deleteMigrationFromMigrationsLogDb(item);
+            AWSMock.restore('DynamoDB');
+        })
+
+        it("should reject when error is thrown while deleting migration",async()=>{
+            AWSMock.mock('DynamoDB', 'deleteItem', (params: DeleteItemInput, callback: any) => {
+                callback(new Error("Could not delete migration"),null);
+            });
+
+            const item: { fileName: string; appliedAt: string } = {
+                fileName:"123.ts",
+                appliedAt:"123"
+            };
+            await expect(migrationsDb.deleteMigrationFromMigrationsLogDb(item)).rejects.toThrow("Could not delete migration");
+            AWSMock.restore('DynamoDB');
         })
     })
 
