@@ -83,6 +83,27 @@ export async function addMigrationToMigrationsLogDb(item: { fileName: string; ap
     });
 }
 
+export async function deleteMigrationFromMigrationsLogDb(item: { fileName: string; appliedAt: string }) {
+    const ddb = await getDdb();
+    const params = {
+        TableName: 'MIGRATIONS_LOG_DB',
+        Key: {
+            FILE_NAME: { S: item.fileName },
+            APPLIED_AT: { S: item.appliedAt },
+        },
+    };
+
+    return new Promise((resolve, reject) => {
+        ddb.deleteItem(params, function (err, data) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
+
 export async function doesMigrationsLogDbExists() {
     const ddb = await getDdb();
 

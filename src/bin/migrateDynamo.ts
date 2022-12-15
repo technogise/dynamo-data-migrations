@@ -3,7 +3,7 @@ import { program } from 'commander';
 import Table from 'cli-table3';
 import _, { isEmpty } from 'lodash';
 import packageJson from '../../package.json';
-import { initAction, createAction, upAction, statusAction } from '../lib/migrateDynamo';
+import { initAction, createAction, upAction, statusAction, downAction } from '../lib/migrateDynamo';
 
 class ERROR extends Error {
     migrated?: string[];
@@ -59,6 +59,19 @@ program
             console.error(error);
             const e = error as ERROR;
             printMigrated(e.migrated);
+        }
+    });
+
+program
+    .command('down')
+    .description('undo the last applied database migration')
+    .action(async () => {
+        try {
+            const migrated = await downAction();
+            const migratedItemsInfo: string = migrated.map((item) => `MIGRATED DOWN: ${item}`).join('\n');
+            console.info(migratedItemsInfo);
+        } catch (error) {
+            console.error(error);
         }
     });
 
