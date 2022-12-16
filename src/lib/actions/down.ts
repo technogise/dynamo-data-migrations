@@ -26,7 +26,7 @@ export async function down() {
             downgraded.push(lastAppliedItem.fileName);
         } catch (error) {
             const e = error as Error;
-            throw new Error(`Could not update changelog: ${e.message}`);
+            throw new Error(`Could not update migrationsLogDb: ${e.message}`);
         }
     }
 
