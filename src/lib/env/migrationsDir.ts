@@ -1,7 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import url from 'url';
-import * as config from './config';
 import * as moduleLoader from '../utils/moduleLoader';
 
 export const DEFAULT_MIGRATIONS_DIR_NAME = 'migrations';
