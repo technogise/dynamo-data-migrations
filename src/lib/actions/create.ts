@@ -1,27 +1,41 @@
 import fs from 'fs-extra';
+import path from 'path';
 
-export function create(description: string) {
-    let isFile = false;
-    try {
-        const stats = fs.statSync('./setup.db/config.ts');
-        isFile = stats.isFile();
-    } catch {
-        console.info('No config.ts file found, Please run the init command first');
+import * as migrationsDir from '../env/migrationsDir';
+import * as migrationsDb from '../env/migrationsDb';
+
+export async function create(description: string) {
+    let message;
+
+    if (!description) {
+        throw new Error('Missing parameter: description');
     }
-    if (isFile) {
-        try {
-            if (!fs.existsSync('setup.db/migrations')) {
-                fs.mkdirSync('setup.db/migrations');
-            }
-            const filePath = `setup.db/migrations/${Date.now()}${
-                description === undefined ? '' : `_${description}`
-            }.ts`;
-            fs.createFile(filePath, (error) => {
-                if (error) throw error;
-                console.info('File is created successfully.');
-            });
-        } catch (error) {
-            console.error(error);
+    await migrationsDir.shouldExist();
+    const migrationsDirPath = await migrationsDir.resolveMigrationsDirPath();
+
+    const source = './node_modules/dynamo-data-migrations/src/samples/migration.ts';
+
+    const filename = `${Date.now()}-${description.split(' ').join('_')}.ts`;
+    const destination = path.join(migrationsDirPath, filename);
+
+    try {
+        await migrationsDb.doesMigrationsLogDbExists();
+    } catch {
+        await migrationsDb.configureMigrationsLogDbSchema();
+    }
+
+    try {
+        await migrationsDb.addMigrationToMigrationsLogDb(filename);
+        await fs.copyFile(source, destination);
+        message = `Created: migrations/${filename}`;
+    } catch (error) {
+        const e = error as Error;
+        if (e.name === 'ResourceNotFoundException') {
+            message = `Could not create migration.. Please run command again`;
+        } else {
+            throw error;
         }
     }
+
+    return message;
 }

@@ -7,15 +7,25 @@ import { initAction, createAction } from '../lib/migrateDynamo';
 program
     .command('init')
     .description('initialize a new migration project')
-    .action(() => {
-        initAction();
+    .action(async () => {
+        try {
+            await initAction();
+            console.info('Initialization successful. Please edit the generated config.ts file');
+        } catch (error) {
+            console.error(error);
+        }
     });
 
 program
     .command('create [description]')
     .description('create a new database migration with the provided description')
-    .action((description) => {
-        createAction(description);
+    .action(async (description) => {
+        try {
+            const message = await createAction(description);
+            console.info(message);
+        } catch (error) {
+            console.error(error);
+        }
     });
 
 program.version(packageJson.version);

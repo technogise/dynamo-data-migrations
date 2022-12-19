@@ -38,7 +38,8 @@
     "aws-sdk": "^2.1113.0",
     "commander": "^9.1.0",
     "fs-extra": "^10.1.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "ts-import": "^4.0.0-beta.8"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.55.0",
@@ -48,6 +49,7 @@
     "@types/node": "^17.0.23",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.23.0",
+    "aws-sdk-mock": "^5.8.0",
     "eslint": "^7.28.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^6.10.1",
@@ -78,6 +80,9 @@
     }
   },
   "jest": {
+    "testMatch": [
+      "**/tests/**/*.spec.ts"
+    ],
     "moduleFileExtensions": [
       "ts",
       "js",
@@ -85,7 +90,7 @@
     ],
     "rootDir": ".",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t)s$": "ts-jest"
     },
     "testEnvironment": "node",
     "collectCoverage": false,
