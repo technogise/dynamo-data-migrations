@@ -74,13 +74,6 @@ describe("up",()=>{
       expect(migrationsDirLoadMigration).nthCalledWith(2,"20160608060209-second_pending_migration.ts");
     });
 
-    // it("should upgrade all pending migrations in ascending order",async()=>{
-    //   await up();
-    //   expect(firstPendingMigration.up).toBeCalled();
-    //   expect(secondPendingMigration.up).toBeCalled();
-      
-    // });
-
     it("should populate the migrationsLogDb with info about the upgraded migrations",async()=>{
       const clock = sinon.useFakeTimers(
         new Date("2016-06-09T08:07:00.077Z").getTime()

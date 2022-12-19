@@ -1,4 +1,3 @@
-import path from "path";
 import fs from "fs-extra";
 
 import { create } from "../../../src/lib/actions/create"
