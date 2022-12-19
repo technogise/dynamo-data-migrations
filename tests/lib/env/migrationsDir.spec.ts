@@ -7,13 +7,19 @@ type ERROR = { errno: number; syscall: string; code: string; path: string };
 jest.mock("fs-extra");
 
 describe("migrationsDir",()=>{
-    let fsStat;
-    let fsReaddir;
-    let moduleLoaderImportFile;
+    let fsStat:jest.SpyInstance;
+    let fsReaddir:jest.SpyInstance;
+    let moduleLoaderImportFile:jest.SpyInstance;
     beforeEach(()=>{
         fsStat = jest.spyOn(fs,"stat");
         fsReaddir = jest.spyOn(fs,"readdir");
         moduleLoaderImportFile = jest.spyOn(moduleLoader,"importFile");
+    });
+
+    afterEach(()=>{
+        fsStat.mockRestore();
+        fsReaddir.mockRestore();
+        moduleLoaderImportFile.mockRestore();
     });
 
     describe("resolveMigrationsDirPath()",()=>{
@@ -28,7 +34,7 @@ describe("migrationsDir",()=>{
         it("should not reject with an error if the migrations dir exists", async () => {
             const stats = new Stats();
             jest.spyOn(fs,"stat").mockResolvedValue(stats);
-            await migrationsDir.shouldExist();
+            await expect(migrationsDir.shouldExist()).resolves.not.toThrowError();
         });
 
         it("should yield an error if the migrations dir does not exist", async () => {
@@ -48,7 +54,7 @@ describe("migrationsDir",()=>{
                 path: "abc"
             }
             jest.spyOn(fs,"stat").mockRejectedValue(errorMock);
-            await migrationsDir.shouldNotExist();
+            await expect(migrationsDir.shouldNotExist()).resolves.not.toThrowError();
         });
 
         it("should yield an error if the migrations dir exists", async () => {
