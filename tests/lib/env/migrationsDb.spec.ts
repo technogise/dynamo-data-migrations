@@ -7,7 +7,7 @@ import * as migrationsDb from "../../../src/lib/env/migrationsDb";
 import * as config from "../../../src/lib/env/config";
 
 describe("migrationsDb",()=>{
-    let configRead;
+    let configRead:jest.SpyInstance;
     beforeEach(()=>{
         configRead = jest.spyOn(config,"read").mockReturnValue(Promise.resolve({
             region:'abc',
@@ -16,9 +16,13 @@ describe("migrationsDb",()=>{
         }));        
     });
 
+    afterEach(()=>{
+        configRead.mockRestore();
+    });
+
     describe("configureMigrationsLogDbSchema()",()=>{
         it("should resolve when no errors are thrown while creating migrationsLogDb", async()=>{
-            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback:(error:Error|null,responseObj:{ pk:string,sk:string })=>void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
@@ -27,7 +31,7 @@ describe("migrationsDb",()=>{
         })
 
         it("should reject when error is thrown while creating migrationsLogDb", async()=>{
-            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string }|null)=>void) => {
                 callback(new Error("Could not create"), null);
             })
 
@@ -38,7 +42,7 @@ describe("migrationsDb",()=>{
 
     describe("addMigrationToMigrationsLogDb()",()=>{
         it("should resolve when no errors are thrown while adding migration to migrationsLogDb", async()=>{
-            AWSMock.mock('DynamoDB', 'putItem', (params: PutItemInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'putItem', (params: PutItemInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string })=>void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
@@ -48,7 +52,7 @@ describe("migrationsDb",()=>{
         })
 
         it("should reject when error is thrown while adding migration to migrationsLogDb", async()=>{
-            AWSMock.mock('DynamoDB', 'putItem', (params: PutItemInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'putItem', (params: PutItemInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string }|null)=>void) => {
                 callback(new Error("Resource Not Found"), null);
             })
 
@@ -59,7 +63,7 @@ describe("migrationsDb",()=>{
 
     describe("deleteMigrationFromMigrationsLogDb()",()=>{
         it("should resolve when no errors are thrown while deleting migration",async()=>{
-            AWSMock.mock('DynamoDB', 'deleteItem', (params: DeleteItemInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'deleteItem', (params: DeleteItemInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string })=>void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
@@ -72,7 +76,7 @@ describe("migrationsDb",()=>{
         })
 
         it("should reject when error is thrown while deleting migration",async()=>{
-            AWSMock.mock('DynamoDB', 'deleteItem', (params: DeleteItemInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'deleteItem', (params: DeleteItemInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string }|null)=>void) => {
                 callback(new Error("Could not delete migration"),null);
             });
 
@@ -87,7 +91,7 @@ describe("migrationsDb",()=>{
 
     describe("doesMigrationsLogDbExists()",()=>{
         it("should resolve when no errors are thrown while describing migrationsLogDb", async()=>{
-            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string })=>void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
@@ -96,7 +100,7 @@ describe("migrationsDb",()=>{
         })
 
         it("should reject when error is thrown while describing migrationsLogDb", async()=>{
-            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: any) => {
+            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: (error:Error|null,responseObj:{ pk:string,sk:string }|null)=>void) => {
                 callback(new Error("Resource Not Found"), null);
             })
 
@@ -116,7 +120,7 @@ describe("migrationsDb",()=>{
                 APPLIED_AT:{ S:"124" }
             }];
 
-            AWSMock.mock('DynamoDB','scan',(params:ScanInput,callback:any)=>{
+            AWSMock.mock('DynamoDB','scan',(params:ScanInput,callback:(error:Error|null,responseObj:{ Items: ItemList; })=>void)=>{
                 callback(null,{ Items }); 
             });
 
@@ -151,7 +155,7 @@ describe("migrationsDb",()=>{
             ]
             stub.onCall(1).returns({ Items });
 
-            AWSMock.mock('DynamoDB','scan',(params:ScanInput,callback:any)=>{
+            AWSMock.mock('DynamoDB','scan',(params:ScanInput,callback:(error:Error|null,stub:sinon.SinonStub)=>void)=>{
                 callback(null,stub()); 
             });
             const migrations = await migrationsDb.getAllMigrations();
