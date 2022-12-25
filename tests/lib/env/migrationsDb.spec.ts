@@ -22,7 +22,7 @@ describe("migrationsDb",()=>{
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
-            await migrationsDb.configureMigrationsLogDbSchema();
+            await expect(migrationsDb.configureMigrationsLogDbSchema()).resolves.not.toThrowError();
             AWSMock.restore('DynamoDB')
         })
 
@@ -43,7 +43,7 @@ describe("migrationsDb",()=>{
             })
 
 
-            await migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" });
+            await expect(migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" })).resolves.not.toThrow();
             AWSMock.restore('DynamoDB')
         })
 
@@ -67,7 +67,7 @@ describe("migrationsDb",()=>{
                 fileName:"123.ts",
                 appliedAt:"123"
             };
-            await migrationsDb.deleteMigrationFromMigrationsLogDb(item);
+            await expect(migrationsDb.deleteMigrationFromMigrationsLogDb(item)).resolves.not.toThrow();
             AWSMock.restore('DynamoDB');
         })
 
@@ -91,7 +91,7 @@ describe("migrationsDb",()=>{
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
-            await migrationsDb.doesMigrationsLogDbExists();
+            await expect(migrationsDb.doesMigrationsLogDbExists()).resolves.not.toThrow();
             AWSMock.restore('DynamoDB')
         })
 
