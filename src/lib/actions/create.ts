@@ -5,8 +5,6 @@ import * as migrationsDir from '../env/migrationsDir';
 import * as migrationsDb from '../env/migrationsDb';
 
 export async function create(description: string) {
-    let message;
-
     if (!description) {
         throw new Error('Missing parameter: description');
     }
@@ -24,18 +22,7 @@ export async function create(description: string) {
         await migrationsDb.configureMigrationsLogDbSchema();
     }
 
-    try {
-        await migrationsDb.addMigrationToMigrationsLogDb(filename);
-        await fs.copyFile(source, destination);
-        message = `Created: migrations/${filename}`;
-    } catch (error) {
-        const e = error as Error;
-        if (e.name === 'ResourceNotFoundException') {
-            message = `Could not create migration.. Please run command again`;
-        } else {
-            throw error;
-        }
-    }
-
+    await fs.copyFile(source, destination);
+    const message = `Created: migrations/${filename}`;
     return message;
 }

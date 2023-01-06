@@ -1,5 +1,7 @@
+import AWS from 'aws-sdk';
 import AWSMock from 'aws-sdk-mock';
-import { CreateTableInput,PutItemInput,DescribeTableInput } from 'aws-sdk/clients/dynamodb';
+import { CreateTableInput,PutItemInput,DescribeTableInput, ScanInput, ItemList } from 'aws-sdk/clients/dynamodb';
+import sinon from 'sinon';
 
 import * as migrationsDb from "../../../src/lib/env/migrationsDb";
 import * as config from "../../../src/lib/env/config";
@@ -40,7 +42,8 @@ describe("migrationsDb",()=>{
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
 
-            await migrationsDb.addMigrationToMigrationsLogDb("abc.ts");
+
+            await migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" });
             AWSMock.restore('DynamoDB')
         })
 
@@ -49,7 +52,7 @@ describe("migrationsDb",()=>{
                 callback(new Error("Resource Not Found"), null);
             })
 
-            await expect(migrationsDb.addMigrationToMigrationsLogDb("abc.ts")).rejects.toThrow("Resource Not Found");
+            await expect(migrationsDb.addMigrationToMigrationsLogDb({ fileName:"abc.ts",appliedAt:"20201014172343" })).rejects.toThrow("Resource Not Found");
             AWSMock.restore('DynamoDB')
         })
     })
@@ -70,6 +73,61 @@ describe("migrationsDb",()=>{
             })
 
             await expect(migrationsDb.doesMigrationsLogDbExists()).rejects.toThrow("Resource Not Found");
+            AWSMock.restore('DynamoDB')
+        })
+    })
+
+    describe("getAllMigrations()",()=>{
+        it("should return a migrations array",async()=>{
+            const Items:ItemList = [{
+                FILE_NAME:{ S:"abc.ts" },
+                APPLIED_AT:{ S:"123" }
+            },
+            {
+                FILE_NAME:{ S:"def.ts" },
+                APPLIED_AT:{ S:"124" }
+            }];
+
+            AWSMock.mock('DynamoDB','scan',(params:ScanInput,callback:any)=>{
+                callback(null,{ Items }); 
+            });
+
+            const migrations = await migrationsDb.getAllMigrations();
+            expect(migrations).toStrictEqual([{ FILE_NAME:"abc.ts",APPLIED_AT:"123" },{ FILE_NAME:"def.ts",APPLIED_AT:"124" }]);
+            AWSMock.restore('DynamoDB')
+        });
+
+        it("should make recursive calls and return the data of all recursive calls in single array",async()=>{
+            const stub = sinon.stub();
+            let Items:ItemList = [{
+                FILE_NAME:{ S:"1.ts" },
+                APPLIED_AT:{ S:"1" }
+            },
+            {
+                FILE_NAME:{ S:"2.ts" },
+                APPLIED_AT:{ S:"2" }
+            }];
+
+            const LastEvaluatedKey:AWS.DynamoDB.Key = {
+                FILE_NAME:{ S:"2.ts" },
+                APPLIED_AT:{ S:"2" }
+            };
+
+            
+            stub.onCall(0).returns({ Items,LastEvaluatedKey });
+            Items = [
+                {
+                    FILE_NAME:{ S:"3.ts" },
+                    APPLIED_AT:{ S:"3" }
+                }
+            ]
+            stub.onCall(1).returns({ Items });
+
+            AWSMock.mock('DynamoDB','scan',(params:ScanInput,callback:any)=>{
+                callback(null,stub()); 
+            });
+            const migrations = await migrationsDb.getAllMigrations();
+            expect(migrations).toStrictEqual([{ FILE_NAME:"1.ts",APPLIED_AT:"1" },{ FILE_NAME:"2.ts",APPLIED_AT:"2" },{ FILE_NAME:"3.ts",APPLIED_AT:"3" }]);
             AWSMock.restore('DynamoDB')
         })
     })

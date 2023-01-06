@@ -20,6 +20,20 @@ describe("config", ()=>{
         moduleLoaderImportFile.mockRestore();
     })
 
+    describe("shouldExist()",()=>{
+        it("should not yield an error if the config exists", async()=>{
+            const stats = new Stats();
+            jest.spyOn(fs,"stat").mockResolvedValue(stats);
+            await config.shouldExist();
+        });
+
+        it("should yield an error if the config does not exists", async()=>{
+            const configPath = path.join(process.cwd(), "setup.db/config.ts");
+            jest.spyOn(fs,"stat").mockRejectedValue(new Error("config not found"));
+            await expect(config.shouldExist()).rejects.toThrow(`config file does not exist: ${configPath}`);
+        });
+    })
+
     describe("shouldNotExist()",()=>{
         it("should not yield an error if the config does not exist", async () => {
             const errorMock:ERROR = {

@@ -1,7 +1,8 @@
 import AWS from 'aws-sdk';
+import { Key } from 'aws-sdk/clients/dynamodb';
 import * as config from './config';
 
-async function getDdb() {
+export async function getDdb() {
     const awsConfig = await config.read();
     const awsCredentials = {
         region: awsConfig.region,
@@ -59,13 +60,13 @@ export async function configureMigrationsLogDbSchema() {
     });
 }
 
-export async function addMigrationToMigrationsLogDb(filename: string) {
+export async function addMigrationToMigrationsLogDb(item: { fileName: string; appliedAt: string }) {
     const ddb = await getDdb();
     const params = {
         TableName: 'MIGRATIONS_LOG_DB',
         Item: {
-            FILE_NAME: { S: filename },
-            APPLIED_AT: { S: 'PENDING' },
+            FILE_NAME: { S: item.fileName },
+            APPLIED_AT: { S: item.appliedAt },
         },
     };
 
@@ -98,4 +99,32 @@ export async function doesMigrationsLogDbExists() {
             }
         });
     });
+}
+
+export async function getAllMigrations() {
+    const ddb = await getDdb();
+
+    const migrations: { FILE_NAME?: string; APPLIED_AT?: string }[] = [];
+    const recursiveProcess = async (lastEvaluatedKey?: Key) => {
+        const params = {
+            TableName: 'MIGRATIONS_LOG_DB',
+            ExclusiveStartKey: lastEvaluatedKey,
+        };
+
+        const { Items, LastEvaluatedKey } = await ddb.scan(params).promise();
+        if (Items)
+            migrations.push(
+                ...Items.map((item) => {
+                    return {
+                        FILE_NAME: item.FILE_NAME.S,
+                        APPLIED_AT: item.APPLIED_AT.S,
+                    };
+                }),
+            );
+
+        if (LastEvaluatedKey) await recursiveProcess(LastEvaluatedKey);
+    };
+
+    await recursiveProcess();
+    return migrations;
 }
