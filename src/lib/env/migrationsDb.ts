@@ -50,7 +50,7 @@ export async function configureMigrationsLogDbSchema() {
 
     return new Promise((resolve, reject) => {
         // Call DynamoDB to create the table
-        ddb.createTable(params, async function (err, data) {
+        ddb.createTable(params, async function callback(err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -73,7 +73,28 @@ export async function addMigrationToMigrationsLogDb(item: { fileName: string; ap
     // Call DynamoDB to add the item to the table
 
     return new Promise((resolve, reject) => {
-        ddb.putItem(params, async function (err, data) {
+        ddb.putItem(params, async function callback(err, data) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
+
+export async function deleteMigrationFromMigrationsLogDb(item: { fileName: string; appliedAt: string }) {
+    const ddb = await getDdb();
+    const params = {
+        TableName: 'MIGRATIONS_LOG_DB',
+        Key: {
+            FILE_NAME: { S: item.fileName },
+            APPLIED_AT: { S: item.appliedAt },
+        },
+    };
+
+    return new Promise((resolve, reject) => {
+        ddb.deleteItem(params, function callback(err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -91,7 +112,7 @@ export async function doesMigrationsLogDbExists() {
     };
 
     return new Promise((resolve, reject) => {
-        ddb.describeTable(params, function (err, data) {
+        ddb.describeTable(params, function callback(err, data) {
             if (err) {
                 reject(err);
             } else {

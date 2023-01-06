@@ -24,7 +24,7 @@ describe("config", ()=>{
         it("should not yield an error if the config exists", async()=>{
             const stats = new Stats();
             jest.spyOn(fs,"stat").mockResolvedValue(stats);
-            await config.shouldExist();
+            await expect(config.shouldExist()).resolves.not.toThrowError();
         });
 
         it("should yield an error if the config does not exists", async()=>{
@@ -44,7 +44,7 @@ describe("config", ()=>{
             }
             jest.spyOn(fs,"stat").mockRejectedValue(errorMock);
             
-            await config.shouldNotExist();
+            await expect(config.shouldNotExist()).resolves.not.toThrowError()
         });
 
         it("should yield an error if the config exists", async () => {
@@ -67,5 +67,3 @@ describe("config", ()=>{
     })
 
 })
-
-

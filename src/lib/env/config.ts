@@ -1,13 +1,10 @@
 import fs from 'fs-extra';
 import url from 'url';
 import path from 'path';
-import { get } from 'lodash';
 import * as moduleLoader from '../utils/moduleLoader';
 
-type CONFIG = { region?: string; accessKeyId?: string; secretAccessKey?: string };
+// type CONFIG = { region?: string; accessKeyId?: string; secretAccessKey?: string };
 type ERROR = { errno: number; syscall: string; code: string; path: string };
-
-const customConfigContent: CONFIG = {};
 
 export const DEFAULT_CONFIG_FILE_NAME = 'config.ts';
 
