@@ -4,9 +4,9 @@ import { status } from './status';
 import * as migrationsDir from '../env/migrationsDir';
 import * as migrationsDb from '../env/migrationsDb';
 
-export async function down() {
+export async function down(profile = 'default') {
     const downgraded = [];
-    const statusItems = await status();
+    const statusItems = await status(profile);
     const appliedItems = statusItems.filter((item) => item.appliedAt !== 'PENDING');
     const lastAppliedItem = _.last(appliedItems);
 
@@ -14,7 +14,7 @@ export async function down() {
         try {
             const migration = await migrationsDir.loadMigration(lastAppliedItem.fileName);
             const migrationDown = migration.down;
-            const ddb = await migrationsDb.getDdb();
+            const ddb = await migrationsDb.getDdb(profile);
             await migrationDown(ddb);
         } catch (error) {
             const e = error as Error;

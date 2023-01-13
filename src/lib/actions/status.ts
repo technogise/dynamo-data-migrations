@@ -4,7 +4,7 @@ import * as migrationsDir from '../env/migrationsDir';
 import * as migrationsDb from '../env/migrationsDb';
 import * as config from '../env/config';
 
-export async function status() {
+export async function status(profile = 'default') {
     await migrationsDir.shouldExist();
     await config.shouldExist();
     const fileNames = await migrationsDir.getFileNames();

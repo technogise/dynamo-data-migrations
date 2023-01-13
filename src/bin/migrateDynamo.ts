@@ -38,10 +38,11 @@ program
 
 program
     .command('create [description]')
+    .option('--profile <type>', 'AWS credentials and configuration to be used', 'default')
     .description('create a new database migration with the provided description')
-    .action(async (description) => {
+    .action(async (description, option) => {
         try {
-            const message = await createAction(description);
+            const message = await createAction(description, option.profile);
             console.info(message);
         } catch (error) {
             console.error(error);
@@ -50,10 +51,11 @@ program
 
 program
     .command('up')
-    .description('run all pending database migrations')
-    .action(async () => {
+    .option('--profile <type>', 'AWS credentials and configuration to be used', 'default')
+    .description('run all pending database migrations against a provided profile.')
+    .action(async (option) => {
         try {
-            const migrated = await upAction();
+            const migrated = await upAction(option.profile);
             printMigrated(migrated);
         } catch (error) {
             console.error(error);
@@ -64,10 +66,11 @@ program
 
 program
     .command('down')
-    .description('undo the last applied database migration')
-    .action(async () => {
+    .option('--profile <type>', 'AWS credentials and configuration to be used', 'default')
+    .description('undo the last applied database migration against a provided profile.')
+    .action(async (option) => {
         try {
-            const migrated = await downAction();
+            const migrated = await downAction(option.profile);
             const migratedItemsInfo: string = migrated.map((item) => `MIGRATED DOWN: ${item}`).join('\n');
             console.info(migratedItemsInfo);
         } catch (error) {
@@ -77,10 +80,11 @@ program
 
 program
     .command('status')
-    .description('print the changelog of the database')
-    .action(async () => {
+    .option('--profile <type>', 'AWS credentials and configuration to be used', 'default')
+    .description('print the changelog of the database against a provided profile')
+    .action(async (option) => {
         try {
-            const statusItems = await statusAction();
+            const statusItems = await statusAction(option.profile);
             printStatusTable(statusItems);
         } catch (error) {
             console.error(error);

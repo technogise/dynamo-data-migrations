@@ -9,8 +9,8 @@ class ERROR extends Error {
     migrated?: string[];
 }
 
-export async function up() {
-    const statusItems = await status();
+export async function up(profile = 'default') {
+    const statusItems = await status(profile);
     const pendingItems = _.filter(statusItems, { appliedAt: 'PENDING' });
     const migrated: string[] = [];
 
@@ -18,7 +18,7 @@ export async function up() {
         try {
             const migration = await migrationsDir.loadMigration(item.fileName);
             const migrationUp = migration.up;
-            const ddb = await migrationsDb.getDdb();
+            const ddb = await migrationsDb.getDdb(profile);
             await migrationUp(ddb);
         } catch (error_) {
             const e = error_ as Error;
