@@ -9,11 +9,11 @@ import * as config from "../../../src/lib/env/config";
 describe("migrationsDb",()=>{
     let configRead:jest.SpyInstance;
     beforeEach(()=>{
-        configRead = jest.spyOn(config,"read").mockReturnValue(Promise.resolve({
+        configRead = jest.spyOn(config,"read").mockReturnValue(Promise.resolve([{
             region:'abc',
             accessKeyId:'abc',
             secretAccessKey:'abc'
-        }));        
+        }]));        
     });
 
     afterEach(()=>{

@@ -4,7 +4,7 @@ import path from 'path';
 import * as migrationsDir from '../env/migrationsDir';
 import * as migrationsDb from '../env/migrationsDb';
 
-export async function create(description: string) {
+export async function create(description: string, profile = 'default') {
     if (!description) {
         throw new Error('Missing parameter: description');
     }

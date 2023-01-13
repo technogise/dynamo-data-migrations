@@ -2,15 +2,8 @@ import AWS from 'aws-sdk';
 import { Key } from 'aws-sdk/clients/dynamodb';
 import * as config from './config';
 
-export async function getDdb() {
-    const awsConfig = await config.read();
-    const awsCredentials = {
-        region: awsConfig.region,
-        accessKeyId: awsConfig.accessKeyId,
-        secretAccessKey: awsConfig.secretAccessKey,
-    };
-    AWS.config.update(awsCredentials);
-
+export async function getDdb(profile = 'default') {
+    await loadConfig(profile);
     return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 }
 
@@ -148,4 +141,30 @@ export async function getAllMigrations() {
 
     await recursiveProcess();
     return migrations;
+}
+
+async function loadConfig(inputProfile = 'default') {
+    const configFromFile = await config.read();
+
+    // Check for data for input profile
+    const profileConfig = configFromFile.find((obj: any) => {
+        return obj.profile === inputProfile || (obj.profile == null && inputProfile === 'default');
+    });
+
+    // Populate  region
+    if (profileConfig && profileConfig.region) {
+        AWS.config.region = profileConfig.region;
+    } else {
+        throw new Error(`Please provide region for porfile:${inputProfile}`);
+    }
+
+    if (profileConfig && profileConfig.accessKeyId && profileConfig.secretAccessKey) {
+        AWS.config.update({
+            accessKeyId: profileConfig.accessKeyId,
+            secretAccessKey: profileConfig.secretAccessKey,
+        });
+    } else {
+        // Load config from shared credentials file if present
+        AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: inputProfile });
+    }
 }
