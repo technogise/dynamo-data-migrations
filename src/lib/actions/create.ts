@@ -8,6 +8,7 @@ export async function create(description: string, profile = 'default') {
     if (!description) {
         throw new Error('Missing parameter: description');
     }
+    const ddb = await migrationsDb.getDdb(profile);
     await migrationsDir.shouldExist();
     const migrationsDirPath = await migrationsDir.resolveMigrationsDirPath();
 
@@ -17,9 +18,9 @@ export async function create(description: string, profile = 'default') {
     const destination = path.join(migrationsDirPath, filename);
 
     try {
-        await migrationsDb.doesMigrationsLogDbExists();
+        await migrationsDb.doesMigrationsLogDbExists(ddb);
     } catch {
-        await migrationsDb.configureMigrationsLogDbSchema();
+        await migrationsDb.configureMigrationsLogDbSchema(ddb);
     }
 
     await fs.copyFile(source, destination);

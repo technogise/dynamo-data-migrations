@@ -9,12 +9,12 @@ export async function down(profile = 'default') {
     const statusItems = await status(profile);
     const appliedItems = statusItems.filter((item) => item.appliedAt !== 'PENDING');
     const lastAppliedItem = _.last(appliedItems);
+    const ddb = await migrationsDb.getDdb(profile);
 
     if (lastAppliedItem) {
         try {
             const migration = await migrationsDir.loadMigration(lastAppliedItem.fileName);
             const migrationDown = migration.down;
-            const ddb = await migrationsDb.getDdb(profile);
             await migrationDown(ddb);
         } catch (error) {
             const e = error as Error;
@@ -22,7 +22,7 @@ export async function down(profile = 'default') {
         }
 
         try {
-            await migrationsDb.deleteMigrationFromMigrationsLogDb(lastAppliedItem);
+            await migrationsDb.deleteMigrationFromMigrationsLogDb(lastAppliedItem, ddb);
             downgraded.push(lastAppliedItem.fileName);
         } catch (error) {
             const e = error as Error;

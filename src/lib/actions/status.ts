@@ -5,11 +5,12 @@ import * as migrationsDb from '../env/migrationsDb';
 import * as config from '../env/config';
 
 export async function status(profile = 'default') {
+    const ddb = await migrationsDb.getDdb(profile);
     await migrationsDir.shouldExist();
     await config.shouldExist();
     const fileNames = await migrationsDir.getFileNames();
 
-    const migrationsLog = await migrationsDb.getAllMigrations();
+    const migrationsLog = await migrationsDb.getAllMigrations(ddb);
 
     const statusTable = await Promise.all(
         fileNames.map(async (fileName) => {

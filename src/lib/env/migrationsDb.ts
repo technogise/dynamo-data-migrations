@@ -7,9 +7,7 @@ export async function getDdb(profile = 'default') {
     return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 }
 
-export async function configureMigrationsLogDbSchema() {
-    const ddb = await getDdb();
-
+export async function configureMigrationsLogDbSchema(ddb: AWS.DynamoDB) {
     const params = {
         AttributeDefinitions: [
             {
@@ -53,8 +51,7 @@ export async function configureMigrationsLogDbSchema() {
     });
 }
 
-export async function addMigrationToMigrationsLogDb(item: { fileName: string; appliedAt: string }) {
-    const ddb = await getDdb();
+export async function addMigrationToMigrationsLogDb(item: { fileName: string; appliedAt: string }, ddb: AWS.DynamoDB) {
     const params = {
         TableName: 'MIGRATIONS_LOG_DB',
         Item: {
@@ -76,8 +73,10 @@ export async function addMigrationToMigrationsLogDb(item: { fileName: string; ap
     });
 }
 
-export async function deleteMigrationFromMigrationsLogDb(item: { fileName: string; appliedAt: string }) {
-    const ddb = await getDdb();
+export async function deleteMigrationFromMigrationsLogDb(
+    item: { fileName: string; appliedAt: string },
+    ddb: AWS.DynamoDB,
+) {
     const params = {
         TableName: 'MIGRATIONS_LOG_DB',
         Key: {
@@ -97,9 +96,7 @@ export async function deleteMigrationFromMigrationsLogDb(item: { fileName: strin
     });
 }
 
-export async function doesMigrationsLogDbExists() {
-    const ddb = await getDdb();
-
+export async function doesMigrationsLogDbExists(ddb: AWS.DynamoDB) {
     const params = {
         TableName: 'MIGRATIONS_LOG_DB',
     };
@@ -115,9 +112,7 @@ export async function doesMigrationsLogDbExists() {
     });
 }
 
-export async function getAllMigrations() {
-    const ddb = await getDdb();
-
+export async function getAllMigrations(ddb: AWS.DynamoDB) {
     const migrations: { FILE_NAME?: string; APPLIED_AT?: string }[] = [];
     const recursiveProcess = async (lastEvaluatedKey?: Key) => {
         const params = {
