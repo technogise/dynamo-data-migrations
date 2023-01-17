@@ -13,12 +13,12 @@ export async function up(profile = 'default') {
     const statusItems = await status(profile);
     const pendingItems = _.filter(statusItems, { appliedAt: 'PENDING' });
     const migrated: string[] = [];
+    const ddb = await migrationsDb.getDdb(profile);
 
     const migrateItem = async (item: { fileName: string; appliedAt: string }) => {
         try {
             const migration = await migrationsDir.loadMigration(item.fileName);
             const migrationUp = migration.up;
-            const ddb = await migrationsDb.getDdb(profile);
             await migrationUp(ddb);
         } catch (error_) {
             const e = error_ as Error;
@@ -34,7 +34,7 @@ export async function up(profile = 'default') {
         };
 
         try {
-            await migrationsDb.addMigrationToMigrationsLogDb(migration);
+            await migrationsDb.addMigrationToMigrationsLogDb(migration, ddb);
         } catch (error) {
             const e = error as Error;
             throw new Error(`Could not update migrationsLogDb: ${e.message}`);
