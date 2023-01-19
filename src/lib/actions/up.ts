@@ -13,11 +13,11 @@ export async function up(profile = 'default') {
     const statusItems = await status(profile);
     const pendingItems = _.filter(statusItems, { appliedAt: 'PENDING' });
     const migrated: string[] = [];
-    const ddb = await migrationsDb.getDdb(profile);
+    const ddb = migrationsDb.getDdb(profile);
 
     const migrateItem = async (item: { fileName: string; appliedAt: string }) => {
         try {
-            const migration = await migrationsDir.loadMigration(item.fileName);
+            const migration = migrationsDir.loadFilesToBeMigrated(item.fileName);
             const migrationUp = migration.up;
             await migrationUp(ddb);
         } catch (error_) {

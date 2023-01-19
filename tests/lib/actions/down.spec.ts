@@ -5,19 +5,18 @@ import * as statusModule from '../../../src/lib/actions/status';
 import * as migrationsDir from '../../../src/lib/env/migrationsDir';
 import * as migrationsDb from '../../../src/lib/env/migrationsDb';
 
-describe("down",()=>{
-    let migration:{ down:jest.Mock }
-    let statusModuleStatus:jest.SpyInstance;
-    let migrationsDirLoadMigration:jest.SpyInstance;
-    let migrationsDbGetDdb:jest.SpyInstance;
-    let migrationsDbDeleteMigrationFromMigrationsLogDb:jest.SpyInstance;
+describe("down", () => {
+    let migration: { down: jest.Mock }
+    let statusModuleStatus: jest.SpyInstance;
+    let migrationsDirLoadMigration: jest.SpyInstance;
+    let migrationsDbDeleteMigrationFromMigrationsLogDb: jest.SpyInstance;
 
-    beforeEach(()=>{
+    beforeEach(() => {
         migration = {
-          down:jest.fn().mockReturnValue(Promise.resolve())
-        } 
+            down: jest.fn().mockReturnValue(Promise.resolve())
+        }
 
-        statusModuleStatus = jest.spyOn(statusModule,"status").mockReturnValue(
+        statusModuleStatus = jest.spyOn(statusModule, "status").mockReturnValue(
             Promise.resolve([
                 {
                     fileName: "20160609113224-first_migration.ts",
@@ -30,20 +29,18 @@ describe("down",()=>{
             ])
         );
 
-        migrationsDirLoadMigration = jest.spyOn(migrationsDir,"loadMigration")
-        .mockResolvedValue(migration);
-
-        migrationsDbGetDdb = jest.spyOn(migrationsDb,"getDdb").mockImplementation(()=>{
-            return Promise.resolve(new AWS.DynamoDB({ apiVersion: '2012-08-10' }));
+        migrationsDirLoadMigration = jest.spyOn(migrationsDir, "loadFilesToBeMigrated")
+            .mockReturnValue(migration);
+        jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
+            return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
         });
 
-        migrationsDbDeleteMigrationFromMigrationsLogDb = jest.spyOn(migrationsDb,"deleteMigrationFromMigrationsLogDb").mockReturnValue(Promise.resolve());
+        migrationsDbDeleteMigrationFromMigrationsLogDb = jest.spyOn(migrationsDb, "deleteMigrationFromMigrationsLogDb").mockReturnValue(Promise.resolve());
     });
 
-    afterEach(()=>{
+    afterEach(() => {
         statusModuleStatus.mockRestore();
         migrationsDirLoadMigration.mockRestore();
-        migrationsDbGetDdb.mockRestore();
         migrationsDbDeleteMigrationFromMigrationsLogDb.mockRestore();
     });
 
@@ -52,7 +49,7 @@ describe("down",()=>{
         expect(statusModuleStatus).toBeCalled();
     });
 
-    it("should yield empty list when nothing to downgrade",async()=>{
+    it("should yield empty list when nothing to downgrade", async () => {
         statusModuleStatus.mockReturnValue(
             Promise.resolve([
                 { fileName: "20160609113224-some_migration.js", appliedAt: "PENDING" }
@@ -68,7 +65,7 @@ describe("down",()=>{
         expect(migrationsDirLoadMigration).toBeCalledWith("20160609113225-last_migration.ts");
     });
 
-    it("should downgrade the last applied migration", async()=>{
+    it("should downgrade the last applied migration", async () => {
         await down();
         expect(migration.down).toBeCalled();
     });
@@ -86,7 +83,7 @@ describe("down",()=>{
 
     it("should yield errors that occurred when deleting from the migrationsLogDb", async () => {
         migrationsDbDeleteMigrationFromMigrationsLogDb.mockReturnValue(
-          Promise.reject(new Error("Could not delete"))
+            Promise.reject(new Error("Could not delete"))
         );
         await expect(down()).rejects.toThrow("Could not update migrationsLogDb: Could not delete");
     });

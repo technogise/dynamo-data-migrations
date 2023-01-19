@@ -108,6 +108,7 @@
     "setupFilesAfterEnv": [
       "<rootDir>/tests/__jest__/setup.ts"
     ],
-    "silent": true
+    "silent": true,
+    "restoreMocks":true
   }
 }

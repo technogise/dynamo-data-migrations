@@ -1,68 +1,45 @@
 import path from "path";
 import fs from "fs-extra";
-import { Stats } from "fs";
 import * as moduleLoader from "../../../src/lib/utils/moduleLoader";
 import * as config from "../../../src/lib/env/config";
 
-type ERROR = { errno: number; syscall: string; code: string; path: string };
 
-describe("config", ()=>{
-    let moduleLoaderImportFile: { mockRestore: () => void; };
-    let fsStat: { mockRestore: () => void; };
-
-    beforeEach(async()=>{
-        moduleLoaderImportFile = jest.spyOn(moduleLoader,"importFile");
-        fsStat = jest.spyOn(fs,"stat");
-    })
-
-    afterEach(() =>{ 
-        fsStat.mockRestore();
-        moduleLoaderImportFile.mockRestore();
-    })
-
-    describe("shouldExist()",()=>{
-        it("should not yield an error if the config exists", async()=>{
-            const stats = new Stats();
-            jest.spyOn(fs,"stat").mockResolvedValue(stats);
-            await expect(config.shouldExist()).resolves.not.toThrowError();
-        });
-
-        it("should yield an error if the config does not exists", async()=>{
-            const configPath = path.join(process.cwd(), "setup.db/config.ts");
-            jest.spyOn(fs,"stat").mockRejectedValue(new Error("config not found"));
-            await expect(config.shouldExist()).rejects.toThrow(`config file does not exist: ${configPath}`);
+describe("config", () => {
+    describe("isConfigFilePresent():true", () => {
+        it("should return true if config file exists", () => {
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            const actualValue = config.isConfigFilePresent();
+            expect(actualValue).toBeTruthy();
         });
     })
 
-    describe("shouldNotExist()",()=>{
-        it("should not yield an error if the config does not exist", async () => {
-            const errorMock:ERROR = {
-                errno: 123,
-                syscall: "sys",
-                code: "ENOENT",
-                path: "abc"
-            }
-            jest.spyOn(fs,"stat").mockRejectedValue(errorMock);
-            
-            await expect(config.shouldNotExist()).resolves.not.toThrowError()
+    describe("isConfigFilePresent():false", () => {
+        it("should return false if the config does not exist", () => {
+            const actualValue = config.isConfigFilePresent();
+            expect(actualValue).toBeFalsy();
         });
-
-        it("should yield an error if the config exists", async () => {
-            const configPath = path.join(process.cwd(), "setup.db/config.ts");
-            const stats = new Stats();
-            jest.spyOn(fs,"stat").mockResolvedValue(stats);
-            await expect(config.shouldNotExist()).rejects.toThrow(`config file already exists: ${configPath}`)
-        });
-
     })
 
-    describe("read()",()=>{
-        it("should attempt to read the config file", async () => {
+    describe("readConfig()", () => {
+        it("should attempt to read the config file", () => {
             const configPath = path.join(process.cwd(), "setup.db/config.js");
-            jest.spyOn(moduleLoader,"importFile").mockImplementation(()=>{
+            jest.spyOn(moduleLoader, "importFile").mockImplementation(() => {
                 throw new Error(`Cannot find module '${configPath}'`);
             });
-            await expect(config.read()).rejects.toThrow(`Cannot find module '${configPath}'`)
+            expect(() => { config.readConfig(); }).toThrow(`Cannot find module '${configPath}'`)
+        });
+
+        it("should return aws config from config file", async () => {
+            const expectedAwsConfig = {
+                awsConfig: [{
+                    profile: 'test',
+                    region: 'abc'
+
+                }]
+            };
+            jest.spyOn(moduleLoader, "importFile").mockReturnValue(expectedAwsConfig);
+            const actualAwsConfig = config.readConfig();
+            expect(actualAwsConfig).toEqual(expectedAwsConfig.awsConfig);
         });
     })
 

@@ -44,32 +44,19 @@ describe("up", () => {
       up: jest.fn().mockReturnValue(Promise.resolve())
     }
 
-    migrationsDirLoadMigration = jest.spyOn(migrationsDir, "loadMigration")
-      .mockResolvedValueOnce(firstPendingMigration)
-      .mockResolvedValueOnce(secondPendingMigration)
+    migrationsDirLoadMigration = jest.spyOn(migrationsDir, "loadFilesToBeMigrated")
+      .mockReturnValueOnce(firstPendingMigration)
+      .mockReturnValueOnce(secondPendingMigration)
 
-    migrationsDbGetDdb = jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
-      return Promise.resolve(awsConfig);
-    });
+    migrationsDbGetDdb = jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => { return awsConfig; });
 
     migrationsDbAddMigrationToMigrationsLogDb = jest.spyOn(migrationsDb, "addMigrationToMigrationsLogDb").mockReturnValue(Promise.resolve());
   });
 
-  afterEach(() => {
-    statusModuleStatus.mockRestore();
-    migrationsDirLoadMigration.mockRestore();
-    migrationsDbGetDdb.mockRestore();
-    migrationsDbAddMigrationToMigrationsLogDb.mockRestore();
-  });
 
-  it("should fetch the status", async () => {
+  it("should call status and load all the pending migrations", async () => {
     await up();
     expect(statusModuleStatus).toBeCalled();
-  });
-
-  it("should load all the pending migrations", async () => {
-    await up();
-    expect(migrationsDirLoadMigration).toBeCalled();
     expect(migrationsDirLoadMigration).toBeCalledTimes(2);
     expect(migrationsDirLoadMigration).nthCalledWith(1, "20160607173840-first_pending_migration.ts");
     expect(migrationsDirLoadMigration).nthCalledWith(2, "20160608060209-second_pending_migration.ts");
@@ -80,7 +67,6 @@ describe("up", () => {
       new Date("2016-06-09T08:07:00.077Z").getTime()
     );
     await up();
-    expect(migrationsDbAddMigrationToMigrationsLogDb).toBeCalled();
     expect(migrationsDbAddMigrationToMigrationsLogDb).toBeCalledTimes(2);
     expect(migrationsDbAddMigrationToMigrationsLogDb).nthCalledWith(1, {
       appliedAt: new Date("2016-06-09T08:07:00.077Z").toJSON(),
@@ -103,9 +89,7 @@ describe("up", () => {
   });
 
   it("should yield an error + items already migrated when unable to update the migrationsLogDb", async () => {
-    migrationsDbAddMigrationToMigrationsLogDb = jest.spyOn(migrationsDb, "addMigrationToMigrationsLogDb")
-      .mockReturnValueOnce(Promise.resolve())
-      .mockReturnValueOnce(Promise.reject(new Error("Kernel panic")));
+    migrationsDbAddMigrationToMigrationsLogDb.mockReturnValueOnce(Promise.resolve()).mockReturnValueOnce(Promise.reject(new Error("Kernel panic")));
     await expect(up()).rejects.toThrow("Could not update migrationsLogDb: Kernel panic");
   })
 })

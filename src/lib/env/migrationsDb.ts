@@ -2,8 +2,8 @@ import AWS from 'aws-sdk';
 import { Key } from 'aws-sdk/clients/dynamodb';
 import * as config from './config';
 
-export async function getDdb(profile = 'default') {
-    await loadConfig(profile);
+export function getDdb(profile = 'default') {
+    loadConfig(profile);
     return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 }
 
@@ -138,8 +138,8 @@ export async function getAllMigrations(ddb: AWS.DynamoDB) {
     return migrations;
 }
 
-async function loadConfig(inputProfile = 'default') {
-    const configFromFile = await config.read();
+function loadConfig(inputProfile: string) {
+    const configFromFile = config.readConfig();
 
     // Check for data for input profile
     const profileConfig = configFromFile.find((obj: any) => {
