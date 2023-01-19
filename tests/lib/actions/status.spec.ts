@@ -13,9 +13,9 @@ describe("status", () => {
     let migrationsDbGetDdb: jest.SpyInstance;
 
     beforeEach(() => {
-        migrationsDirShouldExist = jest.spyOn(migrationsDir, "shouldExist").mockReturnValue(Promise.resolve());
-        configShouldExist = jest.spyOn(config, "shouldExist").mockReturnValue(Promise.resolve());
-        migrationsDirGetFileNames = jest.spyOn(migrationsDir, "getFileNames").mockResolvedValue([
+        migrationsDirShouldExist = jest.spyOn(migrationsDir, "isMigrationDirPresent").mockReturnValue(true);
+        configShouldExist = jest.spyOn(config, "isConfigFilePresent").mockReturnValue(true);
+        migrationsDirGetFileNames = jest.spyOn(migrationsDir, "getFileNamesToBeMigrated").mockReturnValue([
             "20160509113224-first_migration.ts",
             "20160512091701-second_migration.ts",
             "20160513155321-third_migration.ts"
@@ -31,36 +31,27 @@ describe("status", () => {
             }
         ]);
         migrationsDbGetDdb = jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
-            return Promise.resolve(new AWS.DynamoDB({ apiVersion: '2012-08-10' }));
+            return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
         })
     }
     );
 
-    afterEach(() => {
-        migrationsDirShouldExist.mockRestore();
-        configShouldExist.mockRestore();
-        migrationsDirGetFileNames.mockRestore();
-        migrationsDbGetAllMigrations.mockRestore();
-    });
 
-    it("should check that the migrations directory exists", async () => {
+    it("should check that the migrations directory and config exists", async () => {
         await status();
         expect(migrationsDirShouldExist).toBeCalled();
-    });
-
-    it("should yield an error when the migrations directory does not exist", async () => {
-        migrationsDirShouldExist.mockReturnValue(Promise.reject(new Error("migrations directory does not exist")));
-        await expect(status()).rejects.toThrow("migrations directory does not exist");
-    });
-
-    it("should check that the config file exists", async () => {
-        await status();
         expect(configShouldExist).toBeCalled();
     });
 
+    it("should yield an error when the migrations directory does not exist", async () => {
+        migrationsDirShouldExist.mockReturnValue(false);
+        await expect(status()).rejects.toThrow("Please ensure migrations directory and config file is present. If not run init to initialize the same");
+    });
+
+
     it("should yield an error when confile does not exist", async () => {
-        configShouldExist.mockReturnValue(Promise.reject(new Error("config file does not exist")));
-        await expect(status()).rejects.toThrow("config file does not exist");
+        configShouldExist.mockReturnValue(false);
+        await expect(status()).rejects.toThrow("Please ensure migrations directory and config file is present. If not run init to initialize the same");
     });
 
     it("should get the list of files in the migrations directory", async () => {
@@ -69,7 +60,7 @@ describe("status", () => {
     });
 
     it("should yield errors that occurred when getting the list of files in the migrations directory", async () => {
-        migrationsDirGetFileNames.mockReturnValue(Promise.reject(new Error("File system unavailable")));
+        migrationsDirGetFileNames.mockImplementation(() => { throw new Error("File system unavailable") });
         await expect(status()).rejects.toThrow("File system unavailable");
     });
 
@@ -79,7 +70,7 @@ describe("status", () => {
     });
 
     it("should yield errors that occurred when fetching the migrationsLogDb collection", async () => {
-        migrationsDbGetAllMigrations.mockReturnValue(Promise.reject(new Error("Cannot read from the database")));
+        migrationsDbGetAllMigrations.mockImplementation(() => { throw new Error("Cannot read from the database") });
         await expect(status()).rejects.toThrow("Cannot read from the database");
     });
 
