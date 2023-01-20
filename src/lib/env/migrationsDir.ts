@@ -13,7 +13,7 @@ export function isMigrationDirPresent() {
     return fs.existsSync(resolveMigrationsDirPath());
 }
 
-export function getFileNamesToBeMigrated() {
+export function getFileNamesInMigrationFolder() {
     const migrationsDir = resolveMigrationsDirPath();
     const files = fs.readdirSync(migrationsDir);
     return files.sort();

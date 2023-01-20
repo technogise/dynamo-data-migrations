@@ -7,15 +7,15 @@ import * as config from '../env/config';
 export async function status(profile = 'default') {
     if (migrationsDir.isMigrationDirPresent() && config.isConfigFilePresent()) {
         const ddb = migrationsDb.getDdb(profile);
-        const fileNames = migrationsDir.getFileNamesToBeMigrated();
+        const fileNamesInMigrationFolder = migrationsDir.getFileNamesInMigrationFolder();
 
         const migrationsLog = await migrationsDb.getAllMigrations(ddb);
 
         const statusTable = await Promise.all(
-            fileNames.map(async (fileName) => {
-                const findTest = { FILE_NAME: fileName };
-                const itemInLog: any = find(migrationsLog, findTest);
-                const appliedAt = itemInLog ? itemInLog.APPLIED_AT : 'PENDING';
+            fileNamesInMigrationFolder.map(async (fileName) => {
+                const fileNameToSearchInMigrationsLog = { FILE_NAME: fileName };
+                const fileMigrated: any = find(migrationsLog, fileNameToSearchInMigrationsLog);
+                const appliedAt = fileMigrated ? fileMigrated.APPLIED_AT : 'PENDING';
                 return { fileName, appliedAt };
             }),
         );
