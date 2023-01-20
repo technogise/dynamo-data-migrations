@@ -11,7 +11,6 @@ describe("up", () => {
   let firstPendingMigration: { up: jest.Mock };
   let secondPendingMigration: { up: jest.Mock };
   let migrationsDirLoadMigration: jest.SpyInstance;
-  let migrationsDbGetDdb: jest.SpyInstance;
   let migrationsDbAddMigrationToMigrationsLogDb: jest.SpyInstance;
   const awsConfig = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
@@ -48,7 +47,7 @@ describe("up", () => {
       .mockReturnValueOnce(firstPendingMigration)
       .mockReturnValueOnce(secondPendingMigration)
 
-    migrationsDbGetDdb = jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => { return awsConfig; });
+    jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => { return awsConfig; });
 
     migrationsDbAddMigrationToMigrationsLogDb = jest.spyOn(migrationsDb, "addMigrationToMigrationsLogDb").mockReturnValue(Promise.resolve());
   });

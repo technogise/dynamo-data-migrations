@@ -10,12 +10,11 @@ describe("status", () => {
     let configShouldExist: jest.SpyInstance;
     let migrationsDirGetFileNames: jest.SpyInstance;
     let migrationsDbGetAllMigrations: jest.SpyInstance;
-    let migrationsDbGetDdb: jest.SpyInstance;
 
     beforeEach(() => {
         migrationsDirShouldExist = jest.spyOn(migrationsDir, "isMigrationDirPresent").mockReturnValue(true);
         configShouldExist = jest.spyOn(config, "isConfigFilePresent").mockReturnValue(true);
-        migrationsDirGetFileNames = jest.spyOn(migrationsDir, "getFileNamesToBeMigrated").mockReturnValue([
+        migrationsDirGetFileNames = jest.spyOn(migrationsDir, "getFileNamesInMigrationFolder").mockReturnValue([
             "20160509113224-first_migration.ts",
             "20160512091701-second_migration.ts",
             "20160513155321-third_migration.ts"
@@ -30,7 +29,7 @@ describe("status", () => {
                 APPLIED_AT: new Date("2016-06-09T20:10:12.123Z").toJSON()
             }
         ]);
-        migrationsDbGetDdb = jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
+        jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
             return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
         })
     }

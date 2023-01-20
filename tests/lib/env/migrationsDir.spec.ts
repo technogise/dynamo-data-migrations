@@ -28,10 +28,10 @@ describe("check scenarios related to migration directory", () => {
         });
     })
 
-    describe("getFileNamesToBeMigrated()", () => {
+    describe("getFileNamesInMigrationFolder()", () => {
         it("should read the directory and yield the result", () => {
             fs.readdirSync = jest.fn().mockReturnValue(["file1.ts", "file2.ts"]);
-            const files = migrationsDir.getFileNamesToBeMigrated();
+            const files = migrationsDir.getFileNamesInMigrationFolder();
             expect(files).toEqual(["file1.ts", "file2.ts"]);
         });
 
@@ -42,7 +42,7 @@ describe("check scenarios related to migration directory", () => {
                 "20201014172354-test2.ts",
                 "20201014172345-test1.ts"
             ]);
-            const files = migrationsDir.getFileNamesToBeMigrated();
+            const files = migrationsDir.getFileNamesInMigrationFolder();
             expect(files).toEqual([
                 "20201014172343-test.ts",
                 "20201014172345-test1.ts",

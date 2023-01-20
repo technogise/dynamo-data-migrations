@@ -16,8 +16,8 @@ export const upAction = async (profile = 'default') => {
     return up(profile);
 };
 
-export const downAction = async (profile = 'default') => {
-    return down(profile);
+export const downAction = async (profile = 'default', downShift = 1) => {
+    return down(profile, downShift);
 };
 
 export const statusAction = async (profile = 'default') => {
