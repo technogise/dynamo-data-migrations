@@ -157,7 +157,7 @@ describe("migrationsDb", () => {
             jest.spyOn(config, "readConfig").mockReturnValue([{
                 region: ''
             }]);
-            expect(() => migrationsDb.getDdb()).toThrow(new Error('Please provide region for porfile:default'));
+            expect(() => migrationsDb.getDdb()).toThrow(new Error('Please provide region for profile:default'));
         });
 
         it("should configure AWS with credentials from config file when config file contains access and secret access keys", async () => {
@@ -196,13 +196,13 @@ describe("migrationsDb", () => {
                 secretAccessKey: 'defaultSecret'
             },
             {
-                'profile': 'dev',
+               profile: 'dev',
                 region: 'devRegion',
                 accessKeyId: 'devAccess',
                 secretAccessKey: 'devSecret'
             },
             {
-                'profile': 'test',
+                profile: 'test',
                 region: 'testRegion',
                 accessKeyId: 'testAccess',
                 secretAccessKey: 'testSecret'

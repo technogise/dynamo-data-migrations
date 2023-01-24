@@ -52,7 +52,7 @@ describe("create", () => {
     it("should copy the sample migrations to the migrations directory and return appropriate message", async () => {
         const message = await create("my_description");
         expect(fsCopyFile).toBeCalled();
-        expect(message).toMatch(/Created: migrations/);
+        expect(message).toMatch(/my_description/);
     })
 
 })
