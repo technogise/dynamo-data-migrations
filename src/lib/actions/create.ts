@@ -21,8 +21,7 @@ export async function create(description: string, profile = 'default') {
             await migrationsDb.configureMigrationsLogDbSchema(ddb);
         }
         await fs.copyFile(source, destination);
-        const message = `Created: migrations/${filename}`;
-        return message;
+        return filename;
     }
     throw new Error('Migration directory not present. Ensure init command is executed.');
 }

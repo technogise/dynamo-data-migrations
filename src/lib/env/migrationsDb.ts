@@ -143,14 +143,14 @@ function loadConfig(inputProfile: string) {
 
     // Check for data for input profile
     const profileConfig = configFromFile.find((obj: any) => {
-        return obj.profile === inputProfile || (obj.profile == null && inputProfile === 'default');
+        return obj.profile === inputProfile || (!obj.profile && inputProfile === 'default');
     });
 
     // Populate  region
     if (profileConfig && profileConfig.region) {
         AWS.config.region = profileConfig.region;
     } else {
-        throw new Error(`Please provide region for porfile:${inputProfile}`);
+        throw new Error(`Please provide region for profile:${inputProfile}`);
     }
 
     if (profileConfig && profileConfig.accessKeyId && profileConfig.secretAccessKey) {
