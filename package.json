@@ -9,7 +9,9 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build": "tsc",
+    "clean:build": "node -e \"require('del').sync(['build/**'])\"",
+    "prebuild":"npm run clean:build",
+    "build": "tsc  && cp ./src/templates/* ./build/src/",
     "test": "jest --coverage --color --runInBand --silent",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
@@ -41,7 +43,8 @@
     "fs-extra": "^10.1.0",
     "lodash": "^4.17.21",
     "p-each-series": "^2.2.0",
-    "ts-import": "^4.0.0-beta.8"
+    "ts-import": "^4.0.0-beta.8",
+    "del": "^6.0.0"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.55.0",

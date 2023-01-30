@@ -43,7 +43,7 @@ describe("init", () => {
   });
 
   it("should copy the sample config file to the current working directory", async () => {
-    const source = "./node_modules/dynamo-data-migrations/src/samples/config.ts";
+    const source = path.join(__dirname, `../../../src/config.template`);
     const destination = path.join(process.cwd(), `setup.db/${config.DEFAULT_CONFIG_FILE_NAME}`);
     configSpy.mockReturnValue(false);
     migrationDirSpy.mockReturnValue(false);

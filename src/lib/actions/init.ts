@@ -4,7 +4,7 @@ import path from 'path';
 import * as migrationsDir from '../env/migrationsDir';
 import * as config from '../env/config';
 
-const source = './node_modules/dynamo-data-migrations/src/samples/config.ts';
+const source = path.join(__dirname, `../../config.template`);
 const destination = path.join(process.cwd(), `setup.db/${config.DEFAULT_CONFIG_FILE_NAME}`);
 
 export async function init() {
