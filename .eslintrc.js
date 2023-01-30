@@ -36,5 +36,6 @@ module.exports = {
         'unicorn/filename-case': ['error', { case: 'camelCase' }],
         // Allow devDependencies in tests
         'import/no-extraneous-dependencies': ['error', { devDependencies: ['**/*.spec.ts', 'tests/*'] }],
+        'unicorn/prefer-module': 'off'
     },
 };

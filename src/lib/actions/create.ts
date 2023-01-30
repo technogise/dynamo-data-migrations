@@ -4,7 +4,7 @@ import path from 'path';
 import * as migrationsDir from '../env/migrationsDir';
 import * as migrationsDb from '../env/migrationsDb';
 
-const source = './node_modules/dynamo-data-migrations/src/samples/migration.ts';
+const source = path.join(__dirname, `../../migration.template`);
 
 export async function create(description: string, profile = 'default') {
     if (!description) {
