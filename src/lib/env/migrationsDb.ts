@@ -38,10 +38,17 @@ export async function configureMigrationsLogDbSchema(ddb: AWS.DynamoDB) {
             StreamEnabled: false,
         },
     };
+    ddb.createTable(params, function callback(err) {
+        if (err) {
+            throw err;
+        }
+    });
 
+    const migrationParam = {
+        TableName: 'MIGRATIONS_LOG_DB',
+    };
     return new Promise((resolve, reject) => {
-        // Call DynamoDB to create the table
-        ddb.createTable(params, async function callback(err, data) {
+        ddb.waitFor('tableExists', migrationParam, async function callback(err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -100,13 +107,12 @@ export async function doesMigrationsLogDbExists(ddb: AWS.DynamoDB) {
     const params = {
         TableName: 'MIGRATIONS_LOG_DB',
     };
-
-    return new Promise((resolve, reject) => {
-        ddb.describeTable(params, function callback(err, data) {
+    return new Promise((resolve) => {
+        ddb.describeTable(params, function callback(err) {
             if (err) {
-                reject(err);
+                resolve(false);
             } else {
-                resolve(data);
+                resolve(true);
             }
         });
     });

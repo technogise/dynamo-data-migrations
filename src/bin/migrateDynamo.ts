@@ -38,11 +38,10 @@ program
 
 program
     .command('create [description]')
-    .option('--profile <string>', 'AWS credentials and configuration to be used', 'default')
     .description('create a new database migration with the provided description')
-    .action(async (description, option) => {
+    .action(async (description) => {
         try {
-            const fileName = await createAction(description, option.profile);
+            const fileName = await createAction(description);
             console.info('Created: migrations/'.concat(fileName));
         } catch (error) {
             console.error(error);

@@ -22,7 +22,7 @@ Options:
 
 Commands:
   init                            initialize a new migration project
-  create [options] [description]  create a new database migration with the provided description
+  create [description]            create a new database migration with the provided description
   up [options]                    run all pending database migrations against a provided profile.
   down [options]                  undo the last applied database migration against a provided profile.
   status [options]                print the changelog of the database against a provided profile
@@ -66,20 +66,13 @@ export const awsConfig = [
 ### Creating a new migration script
 To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename.
 
-For example: For ````default```` profile
+For example: 
 ````bash
 $ dynamo-data-migrations create sample_migration_1
 Created: migrations/1674549369392-sample_migration_1.ts
 ````
-For ````dev```` profile
 
-````bash
-$ dynamo-data-migrations create sample_migration_1 --profile dev
-Created: migrations/1674549369392-sample_migration_1.ts
-````
-If this is the first time that `create` command is executing against a particular AWS account then it also creates a `MIGRATIONS_LOG` table in the selected AWS account.
-
-A new migration file is created in the 'migrations' directory
+A new migration file is created in the 'migrations' directory with below contents
 ````javascript
 export async function up(ddb: any) {
     // TODO write your migration here.
@@ -90,8 +83,7 @@ export async function down(ddb: any) {
 }
 
 ````
-
-Edit this content so it actually performs changes to your database. Don't forget to write the down part as well.
+Edit the above content to perform your changes to your database. Add rollback statements in the `down` section.
 The ````ddb```` object contains AWS SDK DynamoDB client instance
 
 
@@ -161,7 +153,9 @@ $ dynamo-data-migrations status --profile dev
 ### Migrate up
 This command will apply all pending migrations in the migrations dir picking up files in ascending order as per the name.
 If no profile is passed it will use AWS configuration from `default` profile.
+If this is the first time that `up` command is executing against a particular AWS account then it also creates a `MIGRATIONS_LOG` table in the selected AWS account if it does not exist.
 
+Example: For `default` profile
 ````bash
 $  dynamo-data-migrations status up
 MIGRATED UP: 1674549369392-sample_migration_1.ts
@@ -233,7 +227,7 @@ The above command did three things:
 
 Edit the config.ts file with AWS credentials of the AWS account against which you want to execute the up/down commands. 
 
-### `createAction(description,profile) → Promise<fileName>`
+### `createAction(description) → Promise<fileName>`
 
 For example:
 ```javascript

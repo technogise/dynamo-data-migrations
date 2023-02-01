@@ -32,8 +32,8 @@
     "url": "https://github.com/technogise/dynamo-data-migrations.git"
   },
   "engines": {
-    "node": "=16.0.0",
-    "npm": "6.12.0"
+    "node": ">=16.0.0",
+    "npm": ">=6.12.0"
   },
   "preferGlobal": true,
   "dependencies": {
