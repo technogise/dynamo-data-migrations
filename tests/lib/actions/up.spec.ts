@@ -12,9 +12,12 @@ describe("up", () => {
   let secondPendingMigration: { up: jest.Mock };
   let migrationsDirLoadMigration: jest.SpyInstance;
   let migrationsDbAddMigrationToMigrationsLogDb: jest.SpyInstance;
+  let migrationsDbCheckMigrationLog: jest.SpyInstance;
+  let migrationsDbConfigureMigrationsLogDbSchema: jest.SpyInstance;
   const awsConfig = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
   beforeEach(() => {
+    migrationsDbCheckMigrationLog = jest.spyOn(migrationsDb, "doesMigrationsLogDbExists").mockResolvedValue(true);
     statusModuleStatus = jest.spyOn(statusModule, "status").mockReturnValue(
       Promise.resolve([{
         fileName: "20160605123224-first_applied_migration.ts",
@@ -50,8 +53,20 @@ describe("up", () => {
     jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => { return awsConfig; });
 
     migrationsDbAddMigrationToMigrationsLogDb = jest.spyOn(migrationsDb, "addMigrationToMigrationsLogDb").mockReturnValue(Promise.resolve());
+    migrationsDbConfigureMigrationsLogDbSchema = jest.spyOn(migrationsDb, "configureMigrationsLogDbSchema").mockReturnValue(Promise.resolve());
   });
 
+  it("should create a migrationsLogDb on AWS if it does not eixsts", async () => {
+    migrationsDbCheckMigrationLog.mockResolvedValue(false);
+    jest.spyOn(migrationsDb, "doesMigrationsLogDbExists").mockResolvedValue(false);
+    await up();
+    expect(migrationsDbConfigureMigrationsLogDbSchema).toBeCalledTimes(1);
+  });
+
+  it("should not create a migrationsLogDb on AWS if it already eixsts", async () => {
+    await up();
+    expect(migrationsDbConfigureMigrationsLogDbSchema).toBeCalledTimes(0);
+  });
 
   it("should call status and load all the pending migrations", async () => {
     await up();

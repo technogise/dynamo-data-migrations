@@ -10,20 +10,32 @@ import * as config from "../../../src/lib/env/config";
 describe("migrationsDb", () => {
     describe("configureMigrationsLogDbSchema()", () => {
         it("should resolve when no errors are thrown while creating migrationsLogDb", async () => {
-            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string }) => void) => {
+            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: (error: Error | null) => void) => {
+                callback(null);
+            });
+            AWSMock.mock('DynamoDB', 'waitFor', (state: "tableExists", params: DescribeTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string }) => void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
-            })
-
+            });
             await expect(migrationsDb.configureMigrationsLogDbSchema(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.not.toThrowError();
             AWSMock.restore('DynamoDB')
         })
 
         it("should reject when error is thrown while creating migrationsLogDb", async () => {
-            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string } | null) => void) => {
-                callback(new Error("Could not create"), null);
-            })
+            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: (error: Error | null) => void) => {
+                callback(new Error("Could not create"));
+            });
+            await expect(migrationsDb.configureMigrationsLogDbSchema(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).rejects.toThrowError("Could not create");
+            AWSMock.restore('DynamoDB')
+        })
 
-            await expect(migrationsDb.configureMigrationsLogDbSchema(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).rejects.toThrow("Could not create");
+        it("should reject when error is thrown while waiting for migrationsLogDb table to be active", async () => {
+            AWSMock.mock('DynamoDB', 'createTable', (params: CreateTableInput, callback: (error: Error | null) => void) => {
+                callback(null);
+            });
+            AWSMock.mock('DynamoDB', 'waitFor', (state: "tableExists", params: DescribeTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string } | null) => void) => {
+                callback(new Error('Table is not active'), null);
+            });
+            await expect(migrationsDb.configureMigrationsLogDbSchema(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).rejects.toThrowError("Table is not active");
             AWSMock.restore('DynamoDB')
         })
     })
@@ -33,8 +45,6 @@ describe("migrationsDb", () => {
             AWSMock.mock('DynamoDB', 'putItem', (params: PutItemInput, callback: (error: Error | null, responseObj: { pk: string, sk: string }) => void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             })
-
-
             await expect(migrationsDb.addMigrationToMigrationsLogDb({ fileName: "abc.ts", appliedAt: "20201014172343" }, new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.not.toThrow();
             AWSMock.restore('DynamoDB')
         })
@@ -43,7 +53,6 @@ describe("migrationsDb", () => {
             AWSMock.mock('DynamoDB', 'putItem', (params: PutItemInput, callback: (error: Error | null, responseObj: { pk: string, sk: string } | null) => void) => {
                 callback(new Error("Resource Not Found"), null);
             })
-
             await expect(migrationsDb.addMigrationToMigrationsLogDb({ fileName: "abc.ts", appliedAt: "20201014172343" }, new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).rejects.toThrow("Resource Not Found");
             AWSMock.restore('DynamoDB')
         })
@@ -79,20 +88,18 @@ describe("migrationsDb", () => {
 
     describe("doesMigrationsLogDbExists()", () => {
         it("should resolve when no errors are thrown while describing migrationsLogDb", async () => {
-            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string }) => void) => {
-                callback(null, { pk: 'foo', sk: 'bar' });
+            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: (error: Error | null) => void) => {
+                callback(null);
             })
-
-            await expect(migrationsDb.doesMigrationsLogDbExists(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.not.toThrow();
+            await expect(migrationsDb.doesMigrationsLogDbExists(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.toBeTruthy();
             AWSMock.restore('DynamoDB')
         })
 
         it("should reject when error is thrown while describing migrationsLogDb", async () => {
-            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string } | null) => void) => {
-                callback(new Error("Resource Not Found"), null);
+            AWSMock.mock('DynamoDB', 'describeTable', (params: DescribeTableInput, callback: (error: Error | null) => void) => {
+                callback(new Error("Resource Not Found"));
             })
-
-            await expect(migrationsDb.doesMigrationsLogDbExists(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).rejects.toThrow("Resource Not Found");
+            await expect(migrationsDb.doesMigrationsLogDbExists(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.toBeFalsy();
             AWSMock.restore('DynamoDB')
         })
     })
@@ -196,7 +203,7 @@ describe("migrationsDb", () => {
                 secretAccessKey: 'defaultSecret'
             },
             {
-               profile: 'dev',
+                profile: 'dev',
                 region: 'devRegion',
                 accessKeyId: 'devAccess',
                 secretAccessKey: 'devSecret'

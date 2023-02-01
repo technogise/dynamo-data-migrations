@@ -10,11 +10,13 @@ class ERROR extends Error {
 }
 
 export async function up(profile = 'default') {
+    const ddb = migrationsDb.getDdb(profile);
+    if (!(await migrationsDb.doesMigrationsLogDbExists(ddb))) {
+        await migrationsDb.configureMigrationsLogDbSchema(ddb);
+    }
     const statusItems = await status(profile);
     const pendingItems = _.filter(statusItems, { appliedAt: 'PENDING' });
     const migrated: string[] = [];
-    const ddb = migrationsDb.getDdb(profile);
-
     const migrateItem = async (item: { fileName: string; appliedAt: string }) => {
         try {
             const migration = migrationsDir.loadFilesToBeMigrated(item.fileName);

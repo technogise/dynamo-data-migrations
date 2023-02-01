@@ -8,8 +8,8 @@ export const initAction = async () => {
     return init();
 };
 
-export const createAction = async (description: string, profile = 'default') => {
-    return create(description, profile);
+export const createAction = async (description: string) => {
+    return create(description);
 };
 
 export const upAction = async (profile = 'default') => {
