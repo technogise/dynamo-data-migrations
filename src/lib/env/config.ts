@@ -1,20 +1,49 @@
 import fs from 'fs-extra';
-import url from 'url';
-import path from 'path';
-import * as moduleLoader from '../utils/moduleLoader';
-
-export const DEFAULT_CONFIG_FILE_NAME = 'config.ts';
-
-function getConfigPath() {
-    return path.join(process.cwd(), `setup.db/${DEFAULT_CONFIG_FILE_NAME}`);
-}
+import * as paths from './paths';
+import { CjsFileLoader } from './fileLoader/cjsFileLoader';
+import { TsFileLoader } from './fileLoader/tsFileLoader';
+import { MjsFileLoader } from './fileLoader/mjsFileLoader';
 
 export function isConfigFilePresent() {
-    return fs.existsSync(getConfigPath());
+    return (
+        fs.existsSync(paths.cjsConfigFilePath) ||
+        fs.existsSync(paths.mjsConfigFilePath) ||
+        fs.existsSync(paths.tsConfigFilePath)
+    );
 }
 
-export function readConfig() {
-    const configPath = getConfigPath();
-    const loadedImport = moduleLoader.importFile(url.pathToFileURL(configPath).pathname);
-    return loadedImport.awsConfig;
+export async function readConfig() {
+    const configFile = getFileLoader();
+    return configFile.loadAWSConfig();
+}
+
+export function initializeConfig(ext = 'ts') {
+    switch (ext) {
+        case 'ts':
+            fs.copySync(paths.tsConfigTemplatePath, paths.tsConfigFilePath);
+            break;
+        case 'cjs':
+            fs.copySync(paths.cjsConfigTemplatePath, paths.cjsConfigFilePath);
+            break;
+        case 'esm':
+            fs.copySync(paths.mjsConfigTemplatePath, paths.mjsConfigFilePath);
+            break;
+        default:
+            throw new Error('Unsupported file extension. Ensure file extension is ts,cjs or esm');
+    }
+}
+
+export function getFileLoader() {
+    if (fs.existsSync(paths.tsConfigFilePath)) {
+        return new TsFileLoader();
+    }
+    if (fs.existsSync(paths.cjsConfigFilePath)) {
+        return new CjsFileLoader();
+    }
+    if (fs.existsSync(paths.mjsConfigFilePath)) {
+        return new MjsFileLoader();
+    }
+    throw new Error(
+        'Unsupported extension of config file, please ensure config file has extension of either .ts,.cjs or .mjs',
+    );
 }

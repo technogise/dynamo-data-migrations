@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import * as migrationsDir from "../../../src/lib/env/migrationsDir";
-import * as moduleLoader from "../../../src/lib/utils/moduleLoader";
+
 
 
 describe("check scenarios related to migration directory", () => {
@@ -53,12 +53,8 @@ describe("check scenarios related to migration directory", () => {
     })
 
     describe("loadMigration()", () => {
-        it("should attempt to read the migration file", () => {
-            const migrationsPath = path.join(process.cwd(), "setup.db/migrations/abc.ts");
-            jest.spyOn(moduleLoader, "importFile").mockImplementation(() => {
-                throw new Error(`Cannot find module '${migrationsPath}'`);
-            });
-            expect(() => { migrationsDir.loadFilesToBeMigrated("abc.ts"); }).toThrow(`Cannot find module '${migrationsPath}'`);
+        it("should attempt to read the migration file", async () => {
+           await expect(migrationsDir.loadFilesToBeMigrated("abc.ts")).rejects.toThrow('Unsupported extension of config file, please ensure config file has extension of either .ts,.cjs or .mjs');
         })
     })
 })

@@ -3,10 +3,10 @@ import * as moduleLoader from "../../../src/lib/utils/moduleLoader";
 
 describe("moduleLoader", () => {
     describe("importFile()", () => {
-        it("should call tsImport.loadSync()", () => {
-            jest.spyOn(tsImport, "loadSync").mockReturnValue({});
+        it("should call tsImport.load()", () => {
+            jest.spyOn(tsImport, "load").mockResolvedValue(Promise.resolve());
             moduleLoader.importFile('migrations/abc.ts');
-            expect(tsImport.loadSync).toBeCalled();
+            expect(tsImport.load).toBeCalled();
         })
     })
 })

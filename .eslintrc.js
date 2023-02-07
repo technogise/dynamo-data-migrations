@@ -24,6 +24,7 @@ module.exports = {
         'import/prefer-default-export': 'off',
         'import/no-default-export': 'error',
         'no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
+        "class-methods-use-this": ['error', { "exceptMethods": ["loadMigrationFile"] }],
         '@typescript-eslint/no-use-before-define': [
             'error',
             { functions: false, classes: true, variables: true, typedefs: true },
@@ -36,6 +37,10 @@ module.exports = {
         'unicorn/filename-case': ['error', { case: 'camelCase' }],
         // Allow devDependencies in tests
         'import/no-extraneous-dependencies': ['error', { devDependencies: ['**/*.spec.ts', 'tests/*'] }],
-        'unicorn/prefer-module': 'off'
+        'unicorn/prefer-module': 'off',
+        "import/extensions": [
+            0,
+            ".mjs"
+          ]
     },
 };

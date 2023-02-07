@@ -30,10 +30,9 @@ describe("down", () => {
         );
 
         migrationsDirLoadMigration = jest.spyOn(migrationsDir, "loadFilesToBeMigrated")
-            .mockReturnValue(migration);
-        jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
-            return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
-        });
+            .mockResolvedValue(migration);
+        jest.spyOn(migrationsDb, "getDdb").mockResolvedValue( new AWS.DynamoDB({ apiVersion: '2012-08-10' }));
+        
 
         migrationsDbDeleteMigrationFromMigrationsLogDb = jest.spyOn(migrationsDb, "deleteMigrationFromMigrationsLogDb").mockReturnValue(Promise.resolve());
     });

@@ -6,7 +6,7 @@ import * as config from '../env/config';
 
 export async function status(profile = 'default') {
     if (migrationsDir.isMigrationDirPresent() && config.isConfigFilePresent()) {
-        const ddb = migrationsDb.getDdb(profile);
+        const ddb = await migrationsDb.getDdb(profile);
         const fileNamesInMigrationFolder = migrationsDir.getFileNamesInMigrationFolder();
 
         const migrationsLog = await migrationsDb.getAllMigrations(ddb);

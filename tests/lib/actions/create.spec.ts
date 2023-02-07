@@ -8,11 +8,13 @@ describe("create", () => {
     let migrationsDirShouldExist: jest.SpyInstance;
     let migrationsDbConfigureMigrationsLogDbSchema: jest.SpyInstance;
     let fsCopyFile: jest.SpyInstance;
+    let loadFile: jest.SpyInstance;
 
     beforeEach(async () => {
         migrationsDirShouldExist = jest.spyOn(migrationsDir, "isMigrationDirPresent").mockReturnValue(true);
+        loadFile = jest.spyOn(fs,"existsSync").mockReturnValue(true);
         migrationsDbConfigureMigrationsLogDbSchema = jest.spyOn(migrationsDb, "configureMigrationsLogDbSchema").mockReturnValue(Promise.resolve());
-        jest.spyOn(migrationsDb, "getDdb").mockReturnValue(new AWS.DynamoDB({ apiVersion: '2012-08-10' }));
+        jest.spyOn(migrationsDb, "getDdb").mockResolvedValue(new AWS.DynamoDB({ apiVersion: '2012-08-10' }));
         fsCopyFile = jest.spyOn(fs, "copyFile").mockReturnValue();
     });
 

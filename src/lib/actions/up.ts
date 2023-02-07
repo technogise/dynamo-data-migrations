@@ -10,7 +10,7 @@ class ERROR extends Error {
 }
 
 export async function up(profile = 'default') {
-    const ddb = migrationsDb.getDdb(profile);
+    const ddb = await migrationsDb.getDdb(profile);
     if (!(await migrationsDb.doesMigrationsLogDbExists(ddb))) {
         await migrationsDb.configureMigrationsLogDbSchema(ddb);
     }
@@ -19,9 +19,9 @@ export async function up(profile = 'default') {
     const migrated: string[] = [];
     const migrateItem = async (item: { fileName: string; appliedAt: string }) => {
         try {
-            const migration = migrationsDir.loadFilesToBeMigrated(item.fileName);
+            const migration = await migrationsDir.loadFilesToBeMigrated(item.fileName);
             const migrationUp = migration.up;
-            await migrationUp(ddb);
+            await migration.up(ddb);
         } catch (error_) {
             const e = error_ as Error;
             const error = new ERROR(`Could not migrate up ${item.fileName}: ${e.message}`);

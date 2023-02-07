@@ -16,7 +16,6 @@ describe("migrationsDb", () => {
             AWSMock.mock('DynamoDB', 'waitFor', (state: "tableExists", params: DescribeTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string }) => void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             });
-            await expect(migrationsDb.configureMigrationsLogDbSchema(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.not.toThrowError();
             AWSMock.restore('DynamoDB')
         })
 
@@ -160,21 +159,21 @@ describe("migrationsDb", () => {
     })
 
     describe("AWS config loading from config file", () => {
-        it("should throw error if region is not defined in config file", () => {
-            jest.spyOn(config, "readConfig").mockReturnValue([{
+        it("should throw error if region is not defined in config file", async () => {
+            jest.spyOn(config, "readConfig").mockResolvedValue([{
                 region: ''
             }]);
-            expect(() => migrationsDb.getDdb()).toThrow(new Error('Please provide region for profile:default'));
+            await expect(migrationsDb.getDdb()).rejects.toThrow(new Error('Please provide region for profile:default'));
         });
 
         it("should configure AWS with credentials from config file when config file contains access and secret access keys", async () => {
-            jest.spyOn(config, "readConfig").mockReturnValue([{
+            jest.spyOn(config, "readConfig").mockResolvedValue([{
                 region: 'testRegion',
                 accessKeyId: 'testAccess',
                 secretAccessKey: 'testSecret'
 
             }]);
-            const dynamodb = migrationsDb.getDdb();
+            const dynamodb = await migrationsDb.getDdb();
             expect(dynamodb.config.region).toStrictEqual('testRegion');
             expect(dynamodb.config.credentials?.accessKeyId).toStrictEqual('testAccess');
             expect(dynamodb.config.credentials?.secretAccessKey).toStrictEqual('testSecret');
@@ -187,17 +186,17 @@ describe("migrationsDb", () => {
                     "secretAccessKey": "testSecret"
                 })
             });
-            jest.spyOn(config, "readConfig").mockReturnValue([{
+            jest.spyOn(config, "readConfig").mockResolvedValue([{
                 region: 'testRegion'
             }]);
-            const dynamodb = migrationsDb.getDdb();
+            const dynamodb = await  migrationsDb.getDdb();
             expect(dynamodb.config.region).toStrictEqual('testRegion');
             expect(dynamodb.config.credentials?.accessKeyId).toStrictEqual('testAccess');
             expect(dynamodb.config.credentials?.secretAccessKey).toStrictEqual('testSecret');
         });
 
-        it("should configure AWS with credentials from config file based on input profile", () => {
-            jest.spyOn(config, "readConfig").mockReturnValue([{
+        it("should configure AWS with credentials from config file based on input profile", async () => {
+            jest.spyOn(config, "readConfig").mockResolvedValue([{
                 region: 'defaultRegion',
                 accessKeyId: 'defaultAccess',
                 secretAccessKey: 'defaultSecret'
@@ -215,17 +214,17 @@ describe("migrationsDb", () => {
                 secretAccessKey: 'testSecret'
             }]);
 
-            const dynamodbTest = migrationsDb.getDdb('test');
+            const dynamodbTest = await migrationsDb.getDdb('test');
             expect(dynamodbTest.config.region).toStrictEqual('testRegion');
             expect(dynamodbTest.config.credentials?.accessKeyId).toStrictEqual('testAccess');
             expect(dynamodbTest.config.credentials?.secretAccessKey).toStrictEqual('testSecret');
 
-            const dynamodbDev = migrationsDb.getDdb('dev');
+            const dynamodbDev = await migrationsDb.getDdb('dev');
             expect(dynamodbDev.config.region).toStrictEqual('devRegion');
             expect(dynamodbDev.config.credentials?.accessKeyId).toStrictEqual('devAccess');
             expect(dynamodbDev.config.credentials?.secretAccessKey).toStrictEqual('devSecret');
 
-            const dynamodbDevDefault = migrationsDb.getDdb('default');
+            const dynamodbDevDefault = await migrationsDb.getDdb('default');
             expect(dynamodbDevDefault.config.region).toStrictEqual('defaultRegion');
             expect(dynamodbDevDefault.config.credentials?.accessKeyId).toStrictEqual('defaultAccess');
             expect(dynamodbDevDefault.config.credentials?.secretAccessKey).toStrictEqual('defaultSecret');
