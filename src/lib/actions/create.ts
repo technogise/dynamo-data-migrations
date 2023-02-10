@@ -1,20 +1,18 @@
 import fs from 'fs-extra';
 import path from 'path';
-
-import * as migrationsDir from '../env/migrationsDir';
-
-const source = path.join(__dirname, `../../migration.template`);
+import { getFileLoader } from '../env/config';
+import { isMigrationDirPresent, resolveMigrationsDirPath } from '../env/migrationsDir';
 
 export async function create(description: string) {
-    if (!description) {
-        throw new Error('Missing parameter: description');
+    if (!description || !isMigrationDirPresent()) {
+        throw new Error(
+            'Please ensure description is passed to create method and/or init method is executed once to initialize migration setup',
+        );
     }
-    if (migrationsDir.isMigrationDirPresent()) {
-        const migrationsDirPath = migrationsDir.resolveMigrationsDirPath();
-        const filename = `${Date.now()}-${description.split(' ').join('_')}.ts`;
-        const destination = path.join(migrationsDirPath, filename);
-        await fs.copyFile(source, destination);
-        return filename;
-    }
-    throw new Error('Migration directory not present. Ensure init command is executed.');
+    const migrationsDirPath = resolveMigrationsDirPath();
+    const fileLoader = getFileLoader();
+    const filename = `${Date.now()}-${description.split(' ').join('_')}${fileLoader.configExtension}`;
+    const destination = path.join(migrationsDirPath, filename);
+    await fs.copyFile(fileLoader.migrationTemplate, destination);
+    return filename;
 }

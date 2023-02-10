@@ -47,10 +47,10 @@ describe("up", () => {
     }
 
     migrationsDirLoadMigration = jest.spyOn(migrationsDir, "loadFilesToBeMigrated")
-      .mockReturnValueOnce(firstPendingMigration)
-      .mockReturnValueOnce(secondPendingMigration)
+      .mockResolvedValueOnce(firstPendingMigration)
+      .mockResolvedValueOnce(secondPendingMigration)
 
-    jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => { return awsConfig; });
+    jest.spyOn(migrationsDb, "getDdb").mockResolvedValue(awsConfig);
 
     migrationsDbAddMigrationToMigrationsLogDb = jest.spyOn(migrationsDb, "addMigrationToMigrationsLogDb").mockReturnValue(Promise.resolve());
     migrationsDbConfigureMigrationsLogDbSchema = jest.spyOn(migrationsDb, "configureMigrationsLogDbSchema").mockReturnValue(Promise.resolve());

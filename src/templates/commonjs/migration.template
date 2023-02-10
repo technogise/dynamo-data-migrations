@@ -1,0 +1,9 @@
+module.exports = {
+  async up(ddb) {
+    // TODO write your migration here.
+  },
+
+  async down(ddb) {
+    // TODO write the statements to rollback your migration (if possible)
+  }
+};

@@ -29,9 +29,7 @@ describe("status", () => {
                 APPLIED_AT: new Date("2016-06-09T20:10:12.123Z").toJSON()
             }
         ]);
-        jest.spyOn(migrationsDb, "getDdb").mockImplementation(() => {
-            return new AWS.DynamoDB({ apiVersion: '2012-08-10' });
-        })
+        jest.spyOn(migrationsDb, "getDdb").mockResolvedValue(new AWS.DynamoDB({ apiVersion: '2012-08-10' }));
     }
     );
 

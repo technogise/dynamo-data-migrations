@@ -1,22 +1,30 @@
 {
-  "include": ["src","tests"],
-  "exclude": ["node_modules"],
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
   "compilerOptions": {
     "experimentalDecorators": true,
     "allowJs": false,
     "skipLibCheck": true,
     "target": "es2018",
-    "module": "commonjs",
-    "resolveJsonModule": true,
+    "module": "NodeNext",
     "esModuleInterop": true,
-    "lib": ["esnext.asynciterable", "es2019"],
+    "resolveJsonModule": true,
+    "lib": [
+      "esnext.asynciterable",
+      "es2019"
+    ],
     "declaration": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-     "noImplicitAny": true,
-     "strictFunctionTypes": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
     "outDir": "./build",
-  },
+  }
 }

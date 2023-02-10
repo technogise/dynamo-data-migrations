@@ -1,12 +1,6 @@
 # Dynamo-Data-migrations
- dynamo-data-migration is a database migration tool running in `NodeJS` and `Typescript`. Based on migrate-mongo (https://github.com/seppevs/migrate-mongo), but with DynamoDb support.
+ dynamo-data-migration is a database migration tool running in `NodeJS` and `Typescript`. Based on migrate-mongo (https://github.com/seppevs/migrate-mongo), but with DynamoDb support. You can generate migration file with extension `.ts`, `.cjs` or `.mjs(ESM)` as per your source project language.
 
- ## Output Module
-The module is compiled to a `CommonJS` module.
-
- ## Limitations
-1) The project currently works with NodJS project of type `CommonJS i.e type=module`. It does not support `ESM` module currently.</br>
-2) Project generates `config` and `migration` files with `.ts` extension. Support to generate the same files with`.js` extension is currently not present.
 
 ## Installation
 ````bash
@@ -29,7 +23,7 @@ Commands:
   help [command]                  display help for command
   ````
 ### Initialize a new project
-Make sure you have [Node.js](https://nodejs.org/en/)  installed.  
+Make sure you have [Node.js >=16](https://nodejs.org/en/)  installed.  
 
 Create a directory where you want to store your migrations for your dynamo db database and cd into it. 
 ````bash
@@ -37,10 +31,10 @@ $ mkdir sample-migrations
 $ cd sample-migrations
 ````
 
-Initialize a new dynamo-data-migrations project
+Initialize a new dynamo-data-migrations project in default `TS` specification:
 ````bash
 $ dynamo-data-migrations init
-Initialization successful. Please edit the generated config.ts file
+Initialization successful.
 ````
 The above command did three things: 
 1. create a setup.db folder
@@ -63,8 +57,19 @@ export const awsConfig = [
 
 ````
 
+If you need to generate config and migrations file in `CommonJs` specification use below command:
+````bash
+$ dynamo-data-migrations init --ext cjs
+Initialization successful.
+````
+If you need to generate config and migrations file with `ESM` specification use below command:
+````bash
+$ dynamo-data-migrations init --ext esm
+Initialization successful.
+````
+
 ### Creating a new migration script
-To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename.
+To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. Also the extension of the migration file will be as per the specification mentioned during `init` phase.
 
 For example: 
 ````bash
@@ -213,9 +218,9 @@ const {
 } = require('dynamo-data-migrations');
 ```
 
-### `initAction() → Promise`
+### `initAction(ext) → Promise`
 
-Initialize a new dynamo-data-migrations project
+Initialize a new dynamo-data-migrations project with `TS` specification
 ```javascript
 await initAction();
 ```
@@ -226,6 +231,16 @@ The above command did three things:
 3) Create a `migrations` directory inside setup.db folder
 
 Edit the config.ts file with AWS credentials of the AWS account against which you want to execute the up/down commands. 
+
+Initialize a new dynamo-data-migrations project with `ESM` specification
+```javascript
+await initAction('esm');
+```
+
+Initialize a new dynamo-data-migrations project with `CJS` specification
+```javascript
+await initAction('cjs');
+```
 
 ### `createAction(description) → Promise<fileName>`
 
