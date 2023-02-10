@@ -16,6 +16,7 @@ describe("migrationsDb", () => {
             AWSMock.mock('DynamoDB', 'waitFor', (state: "tableExists", params: DescribeTableInput, callback: (error: Error | null, responseObj: { pk: string, sk: string }) => void) => {
                 callback(null, { pk: 'foo', sk: 'bar' });
             });
+            await expect(migrationsDb.configureMigrationsLogDbSchema(new AWS.DynamoDB({ apiVersion: '2012-08-10' }))).resolves.not.toThrow();
             AWSMock.restore('DynamoDB')
         })
 

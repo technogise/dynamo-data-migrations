@@ -17,7 +17,7 @@ export async function readConfig() {
     return configFile.loadAWSConfig();
 }
 
-export function initializeConfig(ext = 'ts') {
+export function initializeConfig(ext: string) {
     switch (ext) {
         case 'ts':
             fs.copySync(paths.tsConfigTemplatePath, paths.tsConfigFilePath);
