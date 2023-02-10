@@ -26,7 +26,7 @@ function printStatusTable(statusItems: { fileName: string; appliedAt: string }[]
 
 program
     .command('init')
-    .option('--ext <string>', 'extension of the migration files to be generated (.ts,.cjs,.mjs)', '.ts')
+    .option('--ext <string>', 'extension of the migration files to be generated (.ts,.cjs,.mjs)', 'ts')
     .description('initialize a new migration project')
     .action(async (option) => {
         try {
