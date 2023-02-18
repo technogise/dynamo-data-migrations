@@ -1,13 +1,16 @@
-# Dynamo-Data-migrations
- dynamo-data-migration is a database migration tool running in `NodeJS` and `Typescript`. Based on migrate-mongo (https://github.com/seppevs/migrate-mongo), but with DynamoDb support. You can generate migration file with extension `.ts`, `.cjs` or `.mjs(ESM)` as per your source project language.
+## Introduction
+
+`dynamo-data-migrations` is a database migration tool running in based on [migrate-mongo](https://github.com/seppevs/migrate-mongo), but with DynamoDb support. You can generate migration file with extension `.ts`, `.cjs` or `.mjs(ESM)` as per your source project language.
 
 
 ## Installation
-````bash
+```bash
 $ npm install -g dynamo-data-migrations
-````
-## CLI Usage
-````
+```
+
+
+## Usage
+```
 $ dynamo-data-migrations
 Usage: dynamo-data-migrations [options] [command]
 Options:
@@ -21,57 +24,60 @@ Commands:
   down [options]                  undo the last applied database migration against a provided profile.
   status [options]                print the changelog of the database against a provided profile
   help [command]                  display help for command
-  ````
-### Initialize a new project
-Make sure you have [Node.js >=16](https://nodejs.org/en/)  installed.  
+```
 
-Create a directory where you want to store your migrations for your dynamo db database and cd into it. 
-````bash
-$ mkdir sample-migrations
-$ cd sample-migrations
-````
 
-Initialize a new dynamo-data-migrations project in default `TS` specification:
-````bash
-$ dynamo-data-migrations init
-Initialization successful.
-````
-The above command did three things: 
-1. create a setup.db folder
-1. create a sample ' config.ts' file inside setup.db folder 
-2. create a 'migrations' directory inside setup.db folder
+## Initialize a new project
 
-Edit the `config.ts` file with AWS credentials of the AWS account against which you want to execute the up/down commands. You can specify 
-more than one profile. If profile is omitted, it is considered as `default` profile. `Region` is mandatory to be provided, but 
-`accessKeyId` and  `secretAccessKey` are optional, if provided they are used as AWSCredentials, if not provided then credentials are picked up from credentials file in ~aws folder of the executing machine. If it cannot find the credentials file, it will try to load from env variables if provided. More details: `https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html`
+1. Create a directory where you want to store your migrations for your dynamo db database and cd into it.
 
-````javascript
-export const awsConfig = [
-    {
-        profile: '', // Can be a value to denote env. Eg. dev,test,prod. If not provided it is considered to be default
-        region: '', // Mandatory to be provided for each profile
-        accessKeyId: '', // Optional. If not provided credentials are taken from shared credentials file.
-        secretAccessKey: '', // Optional. If not provided credentials are taken from shared credentials file.
-    }
-];
+    ```bash
+    $ mkdir sample-migrations
+    $ cd sample-migrations
+    ```
 
-````
+2. Initialize a new dynamo-data-migrations project in default `TS` specification.
 
-If you need to generate config and migrations file in `CommonJs` specification use below command:
-````bash
-$ dynamo-data-migrations init --ext cjs
-Initialization successful.
-````
-If you need to generate config and migrations file with `ESM` specification use below command:
-````bash
-$ dynamo-data-migrations init --ext esm
-Initialization successful.
-````
+    ```bash
+    $ dynamo-data-migrations init
+    Initialization successful.
+    ```
 
-### Creating a new migration script
+   #### CommonJS
+    ````bash
+    $ dynamo-data-migrations init --ext cjs
+    Initialization successful.
+    ````
+
+   #### ESM
+    ````bash
+    $ dynamo-data-migrations init --ext esm
+    Initialization successful.
+    ````
+
+   The above command did three things:
+   1. Create a `setup.db` folder
+   2. Create a sample `config` file inside `setup.db` folder
+   3. Create a `migrations` directory inside setup.db folder
+
+3. Edit the `config` file with AWS credentials of the AWS account against which you want to execute the up/down commands.
+
+    ```javascript
+    export const awsConfig = [{
+        profile: '', // Can be a value to denote env. Eg. dev,test,prod. If not provided it is considered to be 'default'
+        region: '', // Mandatory to be provided for each profile.
+        accessKeyId: '', // Optional. If not provided credentials are taken from ~/.aws/credentials file.
+        secretAccessKey: '', // Optional. If not provided credentials are taken from ~/.aws/credentials file.
+    }];
+    ```
+
+   You can specify more than one profile. If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded as per the AWS CredentialProviderChain. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html).
+
+
+## Creating a new migration script
 To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. Also the extension of the migration file will be as per the specification mentioned during `init` phase.
 
-For example: 
+For example:
 ````bash
 $ dynamo-data-migrations create sample_migration_1
 Created: migrations/1674549369392-sample_migration_1.ts
@@ -80,11 +86,11 @@ Created: migrations/1674549369392-sample_migration_1.ts
 A new migration file is created in the 'migrations' directory with below contents
 ````javascript
 export async function up(ddb: any) {
-    // TODO write your migration here.
+   // TODO write your migration here.
 }
 
 export async function down(ddb: any) {
-    // TODO write the statements to rollback your migration (if possible)
+   // TODO write the statements to rollback your migration (if possible)
 }
 
 ````
@@ -99,7 +105,7 @@ Always make sure the implementation matches the function signature:
 #### Example : To insert data in a table "CUSTOMER"
 ````javascript
 export async function up(ddb: any) {
-var params = {
+   var params = {
     TableName: 'CUSTOMER',
     Item: {
      'CUSTOMER_ID' : {N: '001'},
@@ -165,7 +171,7 @@ Example: For `default` profile
 $  dynamo-data-migrations status up
 MIGRATED UP: 1674549369392-sample_migration_1.ts
 ````
-With profile `dev` 
+With profile `dev`
 ````bash
 $  dynamo-data-migrations status up --profile dev
 MIGRATED UP: 1674549369392-sample_migration_1.ts
@@ -210,11 +216,11 @@ MIGRATED DOWN: 1674549369392-sample_migration_2.ts
 
 ```javascript
 const {
- initAction,
- createAction,
- upAction,
- downAction,
- statusAction
+   initAction,
+   createAction,
+   upAction,
+   downAction,
+   statusAction
 } = require('dynamo-data-migrations');
 ```
 
@@ -230,7 +236,7 @@ The above command did three things:
 2) Create a sample `config.ts` file inside setup.db folder
 3) Create a `migrations` directory inside setup.db folder
 
-Edit the config.ts file with AWS credentials of the AWS account against which you want to execute the up/down commands. 
+Edit the config.ts file with AWS credentials of the AWS account against which you want to execute the up/down commands.
 
 Initialize a new dynamo-data-migrations project with `ESM` specification
 ```javascript
@@ -270,4 +276,3 @@ Revert  the last "n(downshift value)" applied migration
 const migratedDown = await downAction(2);
 migratedDown.forEach(fileName => console.log('Migrated Down:', fileName));
 ```
-
