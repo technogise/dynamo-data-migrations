@@ -161,14 +161,14 @@ describe("migrationsDb", () => {
 
     describe("AWS config loading from config file", () => {
         it("should throw error if region is not defined in config file", async () => {
-            jest.spyOn(config, "readConfig").mockResolvedValue([{
+            jest.spyOn(config, "loadAWSConfig").mockResolvedValue([{
                 region: ''
             }]);
             await expect(migrationsDb.getDdb()).rejects.toThrow(new Error('Please provide region for profile:default'));
         });
 
         it("should configure AWS with credentials from config file when config file contains access and secret access keys", async () => {
-            jest.spyOn(config, "readConfig").mockResolvedValue([{
+            jest.spyOn(config, "loadAWSConfig").mockResolvedValue([{
                 region: 'testRegion',
                 accessKeyId: 'testAccess',
                 secretAccessKey: 'testSecret'
@@ -187,7 +187,7 @@ describe("migrationsDb", () => {
                     "secretAccessKey": "testSecret"
                 })
             });
-            jest.spyOn(config, "readConfig").mockResolvedValue([{
+            jest.spyOn(config, "loadAWSConfig").mockResolvedValue([{
                 region: 'testRegion'
             }]);
             const dynamodb = await  migrationsDb.getDdb();
@@ -197,7 +197,7 @@ describe("migrationsDb", () => {
         });
 
         it("should configure AWS with credentials from config file based on input profile", async () => {
-            jest.spyOn(config, "readConfig").mockResolvedValue([{
+            jest.spyOn(config, "loadAWSConfig").mockResolvedValue([{
                 region: 'defaultRegion',
                 accessKeyId: 'defaultAccess',
                 secretAccessKey: 'defaultSecret'

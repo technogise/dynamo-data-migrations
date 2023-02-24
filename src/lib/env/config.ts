@@ -3,47 +3,62 @@ import * as paths from './paths';
 import { CjsFileLoader } from './fileLoader/cjsFileLoader';
 import { TsFileLoader } from './fileLoader/tsFileLoader';
 import { MjsFileLoader } from './fileLoader/mjsFileLoader';
+import config from '../../templates/config.json';
 
 export function isConfigFilePresent() {
-    return (
-        fs.existsSync(paths.cjsConfigFilePath) ||
-        fs.existsSync(paths.mjsConfigFilePath) ||
-        fs.existsSync(paths.tsConfigFilePath)
-    );
-}
-
-export async function readConfig() {
-    const configFile = getFileLoader();
-    return configFile.loadAWSConfig();
+    return fs.existsSync(paths.targetConfigPath);
 }
 
 export function initializeConfig(ext: string) {
     switch (ext) {
         case 'ts':
-            fs.copySync(paths.tsConfigTemplatePath, paths.tsConfigFilePath);
+            config.migrationFileExtension = paths.tsExtension;
             break;
         case 'cjs':
-            fs.copySync(paths.cjsConfigTemplatePath, paths.cjsConfigFilePath);
+            config.migrationFileExtension = paths.cjsExtension;
             break;
         case 'esm':
-            fs.copySync(paths.mjsConfigTemplatePath, paths.mjsConfigFilePath);
+            config.migrationFileExtension = paths.mjsExtension;
             break;
         default:
             throw new Error('Unsupported file extension. Ensure file extension is ts,cjs or esm');
     }
+    fs.writeFileSync(paths.targetConfigPath, JSON.stringify(config, null, 4));
 }
 
 export function getFileLoader() {
-    if (fs.existsSync(paths.tsConfigFilePath)) {
+    const configDetails = loadConfig();
+    if (configDetails.migrationFileExtension === paths.tsExtension) {
         return new TsFileLoader();
     }
-    if (fs.existsSync(paths.cjsConfigFilePath)) {
+    if (configDetails.migrationFileExtension === paths.cjsExtension) {
         return new CjsFileLoader();
     }
-    if (fs.existsSync(paths.mjsConfigFilePath)) {
+    if (configDetails.migrationFileExtension === paths.mjsExtension) {
         return new MjsFileLoader();
     }
     throw new Error(
-        'Unsupported extension of config file, please ensure config file has extension of either .ts,.cjs or .mjs',
+        'Unsupported extension in config file for key migrationFileExtension, ensure value is either .ts,.cjs or .mjs',
     );
+}
+
+export function loadAWSConfig() {
+    const configDetails = loadConfig();
+    return configDetails.awsConfig;
+}
+
+export function loadMigrationsDir() {
+    const configDetails = loadConfig();
+    return configDetails.migrationsDir;
+}
+
+function loadConfig() {
+    try {
+        const contents = fs.readFileSync(paths.targetConfigPath, 'utf8');
+        return JSON.parse(contents);
+    } catch {
+        throw new Error(
+            'Unable to load config, ensure config.json file exists, if not initialize it with init command',
+        );
+    }
 }

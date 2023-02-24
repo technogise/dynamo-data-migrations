@@ -1,11 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { getFileLoader } from './config';
+import { getFileLoader, loadMigrationsDir } from './config';
 
 export const DEFAULT_MIGRATIONS_DIR_NAME = 'migrations';
 
 export function resolveMigrationsDirPath() {
-    return path.join(process.cwd(), `setup.db/${DEFAULT_MIGRATIONS_DIR_NAME}`);
+    if (path.isAbsolute(loadMigrationsDir())) {
+        return loadMigrationsDir();
+    }
+    return path.join(process.cwd(), loadMigrationsDir());
 }
 
 export function isMigrationDirPresent() {
@@ -14,11 +17,17 @@ export function isMigrationDirPresent() {
 
 export function getFileNamesInMigrationFolder() {
     const migrationsDir = resolveMigrationsDirPath();
-    const files = fs.readdirSync(migrationsDir);
-    return files.sort();
+    if (isMigrationDirPresent()) {
+        const files = fs.readdirSync(migrationsDir);
+        return files.sort();
+    }
+    throw new Error('Please ensure migrations directory as specified in config.json is present');
 }
 
 export async function loadFilesToBeMigrated(fileName: string) {
-    const migrationsDir = resolveMigrationsDirPath();
-    return getFileLoader().loadMigrationFile(path.join(migrationsDir, fileName));
+    if (isMigrationDirPresent()) {
+        const migrationsDir = resolveMigrationsDirPath();
+        return getFileLoader().loadMigrationFile(path.join(migrationsDir, fileName));
+    }
+    throw new Error('Please ensure migrations directory as specified in config.json is present');
 }

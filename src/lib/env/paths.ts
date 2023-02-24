@@ -15,3 +15,6 @@ export const mjsMigrationPath = path.join(__dirname, `../../templates/esm/migrat
 export const mjsExtension = '.mjs';
 export const tsExtension = '.ts';
 export const cjsExtension = '.cjs';
+
+export const configJsonPath = path.join(__dirname, `../../config.json`);
+export const targetConfigPath = path.join(process.cwd(), 'config.json');
