@@ -40,6 +40,7 @@ Commands:
 
     ```bash
     $ dynamo-data-migrations init
+
     Initialization successful. Please edit the generated config.json file
     ```
 
@@ -65,7 +66,6 @@ The above command did below mentioned 2 things:
          "migrationType": "ts"
          }
    ```
-
    You can specify more than one profile. If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded as per the AWS CredentialProviderChain. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html).
 
 
@@ -80,6 +80,7 @@ Created: migrations/1674549369392-sample_migration_1.ts
 
 A new migration file is created in the 'migrations' directory with below contents
 ````javascript
+
 import AWS from 'aws-sdk';
 export async function up(ddb: AWS.DynamoDB) {
    // TODO write your migration here.
@@ -230,8 +231,7 @@ The above command did two things:
    1. Create a sample `config.json` file 
    2. Create a `migrations` directory 
 
-
-Edit the config.ts file with AWS credentials of the AWS account against which you want to execute the up/down commands. Also add the appropriate `migration type` as described above.
+Edit the config.json file with AWS credentials of the AWS account against which you want to execute the up/down commands. Also add the appropriate `migration type` as described above.
 
 ### `createAction(description) → Promise<fileName>`
 
