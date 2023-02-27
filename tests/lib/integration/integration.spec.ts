@@ -47,7 +47,7 @@ describe("integration test for all types of supported migrations", () => {
 
 
   it("should properly execute init->create->up->down as per requirements for type cjs", async () => {
-    await init('cjs');
+    await init();
     expect(fs.existsSync(path.join(process.cwd(), 'migrations'))).toBeTruthy();
     expect(fs.existsSync(path.join(process.cwd(), 'config.json'))).toBeTruthy();
     fs.copyFileSync(path.join(process.cwd(), 'tests/lib/templates/js/config.json'), path.join(process.cwd(), 'config.json'));
@@ -64,7 +64,7 @@ describe("integration test for all types of supported migrations", () => {
   });
 
   it("should properly execute init->create->up->down as per requirements for type mjs", async () => {
-    await init('esm');
+    await init();
     expect(fs.existsSync(path.join(process.cwd(), 'migrations'))).toBeTruthy();
     expect(fs.existsSync(path.join(process.cwd(), 'config.json'))).toBeTruthy();
     fs.copyFileSync(path.join(process.cwd(), 'tests/lib/templates/mjs/config.json'), path.join(process.cwd(), 'config.json'));
@@ -81,7 +81,7 @@ describe("integration test for all types of supported migrations", () => {
   });
 
   it("should properly execute init->create->up->down as per requirements for type ts", async () => {
-    await init('esm');
+    await init();
     expect(fs.existsSync(path.join(process.cwd(), 'migrations'))).toBeTruthy();
     expect(fs.existsSync(path.join(process.cwd(), 'config.json'))).toBeTruthy();
     fs.copyFileSync(path.join(process.cwd(), 'tests/lib/templates/ts/config.json'), path.join(process.cwd(), 'config.json'));

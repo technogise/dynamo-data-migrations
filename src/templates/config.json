@@ -8,5 +8,5 @@
     }
 ],
 "migrationsDir": "migrations",
-"migrationFileExtension": ".ts"
+"migrationType": ""
 }

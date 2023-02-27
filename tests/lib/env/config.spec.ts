@@ -35,58 +35,40 @@ describe("config", () => {
     })
 
     describe("getFileLoader()", () => {
-        it("should return type fo tsfileLoader when existing config file is of extension .ts", () => {
-            configDetails.migrationFileExtension = ".ts";
+        it("should return type fo tsfileLoader when migration type is ts", () => {
+            configDetails.migrationType = "ts";
             jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(configDetails));
             when(fsStub).calledWith(paths.targetConfigPath).mockReturnValue(true);
             const actualValue = config.getFileLoader();
             expect(actualValue).toEqual(new TsFileLoader());
         });
-        it("should return type of mjfileLoader when existing config file is of extension .mjs", () => {
-            configDetails.migrationFileExtension = ".mjs";
+        it("should return type of mjfileLoader when migration type is mjs", () => {
+            configDetails.migrationType = "mjs";
             jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(configDetails));
             when(fsStub).calledWith(paths.targetConfigPath).mockReturnValue(true);
             const actualValue = config.getFileLoader();
             expect(actualValue).toEqual(new MjsFileLoader());
         });
-        it("should return type of cjsfileLoader when existing config file is of extension .cjs", () => {
-            configDetails.migrationFileExtension = ".cjs";
+        it("should return type of cjsfileLoader when migration type is cjs", () => {
+            configDetails.migrationType = "cjs";
             jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(configDetails));
             when(fsStub).calledWith(paths.targetConfigPath).mockReturnValue(true);
             const actualValue = config.getFileLoader();
             expect(actualValue).toEqual(new CjsFileLoader());
         });
-        it("should throw error when existing config file is not of supported extension", () => {
-            configDetails.migrationFileExtension = ".test";
+        it("should throw error when migration type is not supported", () => {
+            configDetails.migrationType = ".test";
             jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(configDetails));
             when(fsStub).calledWith(paths.targetConfigPath).mockReturnValue(true);
-            expect(() => config.getFileLoader()).toThrow('Unsupported extension in config file for key migrationFileExtension, ensure value is either .ts,.cjs or .mjs');
+            expect(() => config.getFileLoader()).toThrow('Unsupported migration type in config.json. Ensure migration type is ts,cjs or mjs');
         });
     })
 
     describe("initializeConfig()", () => {
-        it("should copy 'ts' templates when input ext is of type 'ts'", () => {
-            configDetails.migrationFileExtension = ".js";
-            config.initializeConfig('ts');
+        it("should copy sample config.json to target path during initialization", () => {
+            config.initializeConfig();
             expect(fileWriter).toBeCalledWith(paths.targetConfigPath, JSON.stringify(configDetails, null, 4));
         });
-
-        it("should copy 'cjs' templates when input ext is of type 'cjs'", () => {
-            configDetails.migrationFileExtension = ".cjs";
-            config.initializeConfig('cjs');
-            expect(fileWriter).toBeCalledWith(paths.targetConfigPath, JSON.stringify(configDetails, null, 4));
-        });
-
-        it("should copy 'mjs' templates when input ext is of type 'esm'", () => {
-            configDetails.migrationFileExtension = ".mjs";
-            config.initializeConfig('esm');
-            expect(fileWriter).toBeCalledWith(paths.targetConfigPath, JSON.stringify(configDetails, null, 4));
-        });
-
-        it("should throw error templates when input ext not supported", () => {
-            expect(() => config.initializeConfig('tst')).toThrow('Unsupported file extension. Ensure file extension is ts,cjs or esm');
-        });
-
     })
 
     describe("loadAWSConfig()", () => {
