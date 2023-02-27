@@ -1,0 +1,12 @@
+{
+    "awsConfig": [
+        {
+            "profile": "",
+            "region": "east",
+            "accessKeyId": "",
+            "secretAccessKey": ""
+        }
+    ],
+    "migrationsDir": "migrations",
+    "migrationFileExtension": ".mjs"
+}
