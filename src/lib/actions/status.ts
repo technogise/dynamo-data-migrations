@@ -1,5 +1,3 @@
-import { find } from 'lodash';
-
 import * as migrationsDir from '../env/migrationsDir';
 import * as migrationsDb from '../env/migrationsDb';
 
