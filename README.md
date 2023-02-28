@@ -36,7 +36,7 @@ Commands:
     $ cd sample-migrations
     ```
 
-2. Initialize a new dynamo-data-migrations project in default `TS` specification.
+2. Initialize a new dynamo-data-migrations project.
 
     ```bash
     $ dynamo-data-migrations init
@@ -49,7 +49,7 @@ The above command did below mentioned 2 things:
    1. Create a sample `config.json` file 
    2. Create a `migrations` directory 
 
-3. Edit the `config.json` file with AWS credentials of the AWS account against which you want to execute the up/down commands. The `migrationFileExtension` contains the extension as specified during `init` command. You can also provide your own `migrations` directory , incase you do not wish to use the default directory. Also provide the `migration type` for the type of migration file that you wish to generate, allowed values are `ts(for TypeScript)`, `cjs(For CommonJS style)` and `mjs(For ESM style)`
+3. Edit the `config.json` file with AWS credentials of the AWS account against which you want to execute the up/down commands. The `migrationType` field will be empty after initialization. You can also provide your own `migrations` directory , incase you do not wish to use the default directory. Also provide the `migration type` for the type of migration file that you wish to generate, allowed values are `ts(for TypeScript)`, `cjs(For CommonJS style)` and `mjs(For ESM style)`
 
     ```javascript
          {
@@ -70,7 +70,7 @@ The above command did below mentioned 2 things:
 
 
 ## Creating a new migration script
-To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. Also the extension of the migration file will be as per the specification mentioned during `init` phase.
+To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. The file extension will be determined by the `migrationType` field value in `config.json`.
 
 For example:
 ````bash
@@ -99,9 +99,10 @@ Always make sure the implementation matches the function signature:
 * `async function up(ddb: any) { /* */ }` should return `Promise`
 
 
-#### Example : To insert data in a table "CUSTOMER"
+#### Example : To insert data in a table "CUSTOMER" for migration type `ts`
 ````javascript
-export async function up(ddb: any) {
+import AWS from 'aws-sdk';
+export async function up(ddb: AWS.DynamoDB) {
    var params = {
     TableName: 'CUSTOMER',
     Item: {
@@ -122,7 +123,7 @@ export async function up(ddb: any) {
    })
 }
 
-export async function down(ddb: any) {
+export async function down(ddb: AWS.DynamoDB) {
     var params = {
     TableName: 'CUSTOMER',
     Key: {
@@ -145,7 +146,7 @@ export async function down(ddb: any) {
 
 ````
 ### Checking the status of the migrations
-At any time, you can check which migrations are applied (or not)
+At any time, you can check which migrations are applied (or not). Pass the profile option when you want to run the command in specific environmeents(dev,int etc)
 
 ````bash
 $ dynamo-data-migrations status --profile dev
