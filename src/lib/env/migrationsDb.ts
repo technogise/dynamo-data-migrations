@@ -145,7 +145,7 @@ export async function getAllMigrations(ddb: AWS.DynamoDB) {
 }
 
 async function loadAwsConfig(inputProfile: string) {
-    const configFromFile = await config.readConfig();
+    const configFromFile = await config.loadAWSConfig();
 
     // Check for data for input profile
     const profileConfig = configFromFile.find((obj: any) => {

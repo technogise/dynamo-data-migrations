@@ -1,0 +1,12 @@
+{
+    "awsConfig": [
+        {
+            "profile": "",
+            "region": "test",
+            "accessKeyId": "",
+            "secretAccessKey": ""
+        }
+    ],
+    "migrationsDir": "migrations",
+    "migrationType": "ts"
+}

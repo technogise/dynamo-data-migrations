@@ -4,8 +4,8 @@ import { up } from './actions/up';
 import { status } from './actions/status';
 import { down } from './actions/down';
 
-export const initAction = async (ext = 'ts') => {
-    return init(ext);
+export const initAction = async () => {
+    return init();
 };
 
 export const createAction = async (description: string) => {

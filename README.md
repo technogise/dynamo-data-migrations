@@ -40,37 +40,32 @@ Commands:
 
     ```bash
     $ dynamo-data-migrations init
-    Initialization successful.
+
+    Initialization successful. Please edit the generated config.json file
     ```
 
-   #### CommonJS
-    ````bash
-    $ dynamo-data-migrations init --ext cjs
-    Initialization successful.
-    ````
 
-   #### ESM
-    ````bash
-    $ dynamo-data-migrations init --ext esm
-    Initialization successful.
-    ````
+The above command did below mentioned 2 things:
+   1. Create a sample `config.json` file 
+   2. Create a `migrations` directory 
 
-   The above command did three things:
-   1. Create a `setup.db` folder
-   2. Create a sample `config` file inside `setup.db` folder
-   3. Create a `migrations` directory inside setup.db folder
-
-3. Edit the `config` file with AWS credentials of the AWS account against which you want to execute the up/down commands.
+3. Edit the `config.json` file with AWS credentials of the AWS account against which you want to execute the up/down commands. The `migrationFileExtension` contains the extension as specified during `init` command. You can also provide your own `migrations` directory , incase you do not wish to use the default directory. Also provide the `migration type` for the type of migration file that you wish to generate, allowed values are `ts(for TypeScript)`, `cjs(For CommonJS style)` and `mjs(For ESM style)`
 
     ```javascript
-    export const awsConfig = [{
-        profile: '', // Can be a value to denote env. Eg. dev,test,prod. If not provided it is considered to be 'default'
-        region: '', // Mandatory to be provided for each profile.
-        accessKeyId: '', // Optional. If not provided credentials are taken from ~/.aws/credentials file.
-        secretAccessKey: '', // Optional. If not provided credentials are taken from ~/.aws/credentials file.
-    }];
-    ```
-
+         {
+         "awsConfig" : [
+            {
+               "profile": "", 
+               "region": "", 
+               "accessKeyId": "", 
+               "secretAccessKey": ""
+            }
+         ],
+         "migrationsDir": "migrations",
+         //Below field will be empty when initialized. Add suitable type as per source project type.
+         "migrationType": "ts"
+         }
+   ```
    You can specify more than one profile. If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded as per the AWS CredentialProviderChain. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html).
 
 
@@ -85,11 +80,13 @@ Created: migrations/1674549369392-sample_migration_1.ts
 
 A new migration file is created in the 'migrations' directory with below contents
 ````javascript
-export async function up(ddb: any) {
+
+import AWS from 'aws-sdk';
+export async function up(ddb: AWS.DynamoDB) {
    // TODO write your migration here.
 }
 
-export async function down(ddb: any) {
+export async function down(ddb: AWS.DynamoDB) {
    // TODO write the statements to rollback your migration (if possible)
 }
 
@@ -230,23 +227,11 @@ Initialize a new dynamo-data-migrations project with `TS` specification
 ```javascript
 await initAction();
 ```
-The above command did three things:
+The above command did two things:
+   1. Create a sample `config.json` file 
+   2. Create a `migrations` directory 
 
-1) Create a `setup.db` folder
-2) Create a sample `config.ts` file inside setup.db folder
-3) Create a `migrations` directory inside setup.db folder
-
-Edit the config.ts file with AWS credentials of the AWS account against which you want to execute the up/down commands.
-
-Initialize a new dynamo-data-migrations project with `ESM` specification
-```javascript
-await initAction('esm');
-```
-
-Initialize a new dynamo-data-migrations project with `CJS` specification
-```javascript
-await initAction('cjs');
-```
+Edit the config.json file with AWS credentials of the AWS account against which you want to execute the up/down commands. Also add the appropriate `migration type` as described above.
 
 ### `createAction(description) → Promise<fileName>`
 

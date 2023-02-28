@@ -26,12 +26,11 @@ function printStatusTable(statusItems: { fileName: string; appliedAt: string }[]
 
 program
     .command('init')
-    .option('--ext <string>', 'extension of the migration files to be generated (.ts,.cjs,.mjs)', 'ts')
     .description('initialize a new migration project')
-    .action(async (option) => {
+    .action(async () => {
         try {
-            await initAction(option.ext);
-            console.info('Initialization successful.');
+            await initAction();
+            console.info('Initialization successful. Please edit the generated config.json file');
         } catch (error) {
             console.error(error);
         }

@@ -4,10 +4,11 @@ import { getFileLoader } from '../env/config';
 import { isMigrationDirPresent, resolveMigrationsDirPath } from '../env/migrationsDir';
 
 export async function create(description: string) {
-    if (!description || !isMigrationDirPresent()) {
-        throw new Error(
-            'Please ensure description is passed to create method and/or init method is executed once to initialize migration setup',
-        );
+    if (!description) {
+        throw new Error('Please pass a valid description');
+    }
+    if (!isMigrationDirPresent()) {
+        throw new Error('Please ensure migrations directory as specified in config.json is present');
     }
     const migrationsDirPath = resolveMigrationsDirPath();
     const fileLoader = getFileLoader();
