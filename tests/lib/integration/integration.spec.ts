@@ -22,9 +22,15 @@ describe("integration test for all types of supported migrations", () => {
     endpoint: 'http://localhost:4567',
     sslEnabled: false,
     region: "local",
+    accessKeyId: "dummy", 
+    secretAccessKey: "dummy", 
   });
   beforeAll(() => {
-    dynaliteServer.listen(4567);
+    dynaliteServer.listen(4567,function(err: any) {
+      if (err) {
+        throw err;
+      }
+    });
   });
 
   afterAll(() => {
