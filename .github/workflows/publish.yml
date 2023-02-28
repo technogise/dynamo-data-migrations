@@ -29,4 +29,4 @@ jobs:
     - name: Publish
       run: npm publish
       env: 
-          NODE_AUTH_TOKEN: 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
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
