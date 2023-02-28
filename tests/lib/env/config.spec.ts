@@ -80,15 +80,10 @@ describe("config", () => {
     })
 
     describe("loadMigrationsDir()", () => {
-        it("should load aws config from config.json", () => {
-            const actualAwsConfig = config.loadMigrationsDir();
-            expect(actualAwsConfig).toEqual(configDetails.migrationsDir);
-        });
-        it("should load migrarttion dir from config.json", () => {
+        it("should load migration dir from config.json", () => {
             const migrationDir = config.loadMigrationsDir();
             expect(migrationDir).toEqual(configDetails.migrationsDir);
         });
-
 
     })
 })
