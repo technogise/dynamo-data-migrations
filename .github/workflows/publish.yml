@@ -26,7 +26,7 @@ jobs:
       run: npm ci
     - name: Build  
       run: npm run build
-    #- name: Publish
-    #  run: npm publish --access public// no publish for now
-    #  env: 
-    #      NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+    - name: Publish
+      run: npm publish
+      env: 
+          NODE_AUTH_TOKEN: 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
