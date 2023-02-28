@@ -26,6 +26,8 @@ jobs:
       run: npm ci
     - name: Build  
       run: npm run build
+    - name: Login
+      run: npm login
     - name: Publish
       run: npm publish --access public
       env: 
