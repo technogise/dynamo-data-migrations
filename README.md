@@ -78,7 +78,8 @@ $ dynamo-data-migrations create sample_migration_1
 Created: migrations/1674549369392-sample_migration_1.ts
 ````
 
-A new migration file is created in the 'migrations' directory with below contents
+A new migration file is created in the 'migrations' directory.
+Below is an example of migration file generated when `migrationType` is set to `ts`.
 ````javascript
 
 import AWS from 'aws-sdk';
@@ -99,7 +100,7 @@ Always make sure the implementation matches the function signature:
 * `async function up(ddb: any) { /* */ }` should return `Promise`
 
 
-#### Example : To insert data in a table "CUSTOMER" for migration type `ts`
+#### Example : To insert data in a table "CUSTOMER" for migration type `ts`.
 ````javascript
 import AWS from 'aws-sdk';
 export async function up(ddb: AWS.DynamoDB) {
@@ -146,7 +147,7 @@ export async function down(ddb: AWS.DynamoDB) {
 
 ````
 ### Checking the status of the migrations
-At any time, you can check which migrations are applied (or not). Pass the profile option when you want to run the command in specific environmeents(dev,int etc)
+At any time, you can check which migrations are applied (or not). Pass the profile option when you want to run the command in specific environmeents(dev,int etc).
 
 ````bash
 $ dynamo-data-migrations status --profile dev
@@ -174,7 +175,7 @@ With profile `dev`
 $  dynamo-data-migrations status up --profile dev
 MIGRATED UP: 1674549369392-sample_migration_1.ts
 ````
-If an an error occurred, it will stop and won't continue with the rest of the pending migrations
+If an an error occurred, it will stop and won't continue with the rest of the pending migrations.
 
 If we check the status again, we can see the last migration was successfully applied:
 ````bash
@@ -186,7 +187,7 @@ $ dynamo-data-migrations status
 └─────────────────────────────────────────┴──────────────────────────┘
 ````
 ### Migrate down
-With this command, dynamo-data-migrations will revert (only) the last applied migration
+With this command, dynamo-data-migrations will revert (only) the last applied migration.
 
 ````bash
 $ dynamo-data-migrations down
