@@ -5,15 +5,17 @@ import * as statusModule from '../../../src/lib/actions/status';
 import * as migrationsDir from '../../../src/lib/env/migrationsDir';
 import * as migrationsDb from '../../../src/lib/env/migrationsDb';
 
+
 describe("down", () => {
-    let migration: { down: jest.Mock }
+    let migration: { down: jest.Mock, up: jest.Mock }
     let statusModuleStatus: jest.SpyInstance;
     let migrationsDirLoadMigration: jest.SpyInstance;
     let migrationsDbDeleteMigrationFromMigrationsLogDb: jest.SpyInstance;
 
     beforeEach(() => {
         migration = {
-            down: jest.fn().mockReturnValue(Promise.resolve())
+            down: jest.fn().mockReturnValue(Promise.resolve()),
+            up: jest.fn().mockReturnValue(Promise.resolve())
         }
 
         statusModuleStatus = jest.spyOn(statusModule, "status").mockReturnValue(

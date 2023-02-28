@@ -8,8 +8,8 @@ import * as migrationsDb from '../../../src/lib/env/migrationsDb';
 
 describe("up", () => {
   let statusModuleStatus: jest.SpyInstance;
-  let firstPendingMigration: { up: jest.Mock };
-  let secondPendingMigration: { up: jest.Mock };
+  let firstPendingMigration: { up: jest.Mock, down : jest.Mock };
+  let secondPendingMigration: { up: jest.Mock ,  down : jest.Mock };
   let migrationsDirLoadMigration: jest.SpyInstance;
   let migrationsDbAddMigrationToMigrationsLogDb: jest.SpyInstance;
   let migrationsDbCheckMigrationLog: jest.SpyInstance;
@@ -39,11 +39,14 @@ describe("up", () => {
     );
 
     firstPendingMigration = {
-      up: jest.fn().mockReturnValue(Promise.resolve())
+      up: jest.fn().mockReturnValue(Promise.resolve()),
+      down: jest.fn().mockReturnValue(Promise.resolve())
+
     }
 
     secondPendingMigration = {
-      up: jest.fn().mockReturnValue(Promise.resolve())
+      up: jest.fn().mockReturnValue(Promise.resolve()),
+      down: jest.fn().mockReturnValue(Promise.resolve())
     }
 
     migrationsDirLoadMigration = jest.spyOn(migrationsDir, "loadFilesToBeMigrated")

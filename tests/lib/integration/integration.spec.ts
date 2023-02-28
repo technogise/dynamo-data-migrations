@@ -26,7 +26,7 @@ describe("integration test for all types of supported migrations", () => {
     secretAccessKey: "dummy", 
   });
   beforeAll(() => {
-    dynaliteServer.listen(4567,function(err: any) {
+    dynaliteServer.listen(4567,function run(err: any) {
       if (err) {
         throw err;
       }

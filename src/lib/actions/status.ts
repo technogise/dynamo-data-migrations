@@ -12,8 +12,10 @@ export async function status(profile = 'default') {
     const statusTable = await Promise.all(
         fileNamesInMigrationFolder.map(async (fileName) => {
             const fileNameToSearchInMigrationsLog = { FILE_NAME: fileName };
-            const fileMigrated: any = find(migrationsLog, fileNameToSearchInMigrationsLog);
-            const appliedAt = fileMigrated ? fileMigrated.APPLIED_AT : 'PENDING';
+            const fileMigrated = migrationsLog.find((migrated) => {
+                return migrated.FILE_NAME === fileNameToSearchInMigrationsLog.FILE_NAME;
+            });
+            const appliedAt: string = fileMigrated?.APPLIED_AT ? fileMigrated.APPLIED_AT : 'PENDING';
             return { fileName, appliedAt };
         }),
     );

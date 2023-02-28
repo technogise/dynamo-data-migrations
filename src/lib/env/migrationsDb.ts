@@ -148,9 +148,11 @@ async function loadAwsConfig(inputProfile: string) {
     const configFromFile = await config.loadAWSConfig();
 
     // Check for data for input profile
-    const profileConfig = configFromFile.find((obj: any) => {
-        return obj.profile === inputProfile || (!obj.profile && inputProfile === 'default');
-    });
+    const profileConfig = configFromFile.find(
+        (obj: { profile: string; region: string; accessKeyId: string; secretAccessKey: string }) => {
+            return obj.profile === inputProfile || (!obj.profile && inputProfile === 'default');
+        },
+    );
 
     // Populate  region
     if (profileConfig && profileConfig.region) {

@@ -1,3 +1,8 @@
+export interface Migration {
+    up(ddb: AWS.DynamoDB): Promise<void>;
+    down(ddb: AWS.DynamoDB): Promise<void>;
+}
+
 export abstract class FileLoader {
     configExtension: string;
 
@@ -8,5 +13,5 @@ export abstract class FileLoader {
         this.migrationTemplate = migrationPath;
     }
 
-    abstract loadMigrationFile(importPath: string): Promise<any>;
+    abstract loadMigrationFile(importPath: string): Promise<Migration>;
 }
