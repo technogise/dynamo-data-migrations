@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit",
     "clean:build": "node -e \"require('del').sync(['build/**'])\"",
     "prebuild": "npm run clean:build",
-    "build": "tsc && cp -r  ./src/templates/ ./build/src/templates/",
+    "build": "tsc && cp -r  ./src/templates/ ./build/src/",
     "test": "jest --coverage --color --runInBand --silent",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
