@@ -1,6 +1,6 @@
 {
   "name": "dynamo-data-migrations",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "A library to easily run migrations on DynamoDb with TypeScript.",
   "main": "build/src/lib/migrateDynamo.js",
   "types": "build/src/lib/migrateDynamo.d.ts",
