@@ -1,12 +1,14 @@
 {
 "awsConfig" : [
     {
-        "profile": "", 
-        "region": "", 
-        "accessKeyId": "", 
-        "secretAccessKey": ""
+        "profile": "", //If not provided, it is considered as default
+        "region": "",  //mandatory
+        "accessKeyId": "", //optional, if aws credentials are present in shared credentials file (~/.aws/credentials)
+        "secretAccessKey": "" //optional, if aws credentials are present in shared credentials file (~/.aws/credentials)
     }
 ],
+//Below directory will be created, however if you want to use your own migration dir, provide its path here and ensure the directory is already created.
 "migrationsDir": "migrations",
+//Below field is empty when initialized. Add suitable type as per source project type. Allowed values are ts(Typescript),cjs(CommonJS) and mjs(ESM).
 "migrationType": ""
 }

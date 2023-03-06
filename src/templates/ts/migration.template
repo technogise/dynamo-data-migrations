@@ -5,5 +5,5 @@ export async function up(ddb: AWS.DynamoDB) {
 }
 
 export async function down(ddb: AWS.DynamoDB) {
-    // TODO write the statements to rollback your migration (if possible)
+    // TODO write the statements to rollback your migration 
 }
