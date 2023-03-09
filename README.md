@@ -8,7 +8,6 @@
 $ npm install -g dynamo-data-migrations
 ```
 
-
 ## Usage
 ```
 $ dynamo-data-migrations
@@ -37,7 +36,12 @@ Commands:
     Initialization successful. Please edit the generated config.json file
     ```
 
-Edit the generated `config.json` file with AWS credentials of the AWS account against which you want to execute the up/down commands. You can specify multiple connections using the `profile` option. If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded as per the AWS CredentialProviderChain. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html).
+## Editing config.json
+The `config.json` generated during the `init` phase conains configuration information as required to run the `up`, `down` and `satus` commands. Below is a brief description of the details specified in the file.
+   1. `awsConfig`: This section is used to store AWS credentials and region of the AWS account against which you want to execute the up/down/status commands.
+       You can specify multiple profiles, if profile is not specified it is considered as `default` profile. If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded as per the AWS CredentialProviderChain. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html). **Region is mandatory for each profile**. 
+   2. `migrationsDir`: This value specifies the directory containing the migration files. By default during `init` phase `migrations` directory is created. If you want to use your own migration directory, specify the path (relative or absolute) in this section and **ensure the directory is created before executing any up/down/status command**.
+   3. `migrationType` : Ensure a value from `ts`,`cjs` and `mjs` is provided here, based on which the migration script will be generated.
 
 
 ## Creating a new migration script
@@ -74,7 +78,7 @@ $  dynamo-data-migrations up
 MIGRATED UP: 1674549369392-sample_migration_1.ts
 MIGRATED UP: 1674549369492-sample_migration_2.ts
 ````
-With profile `dev`
+To execute profile `dev`
 ````bash
 $  dynamo-data-migrations up --profile dev
 MIGRATED UP: 1674549369392-sample_migration_1.ts
@@ -94,6 +98,7 @@ $ dynamo-data-migrations status
 With this command and without any parameters, dynamo-data-migrations will revert (only) the last applied migration.
 You can also pass the number of downshifts to be done i.e. you can perform upto last `n` installed migrations. If you want to migrate all the applied migrations pass the `shift` argumen wih value `0`
 
+Below will revert las 2 applied migrations.
 ````bash
 $ dynamo-data-migrations down --shift 2
 MIGRATED DOWN: 1674549369392-sample_migration_1.ts 
