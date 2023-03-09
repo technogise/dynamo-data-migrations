@@ -53,7 +53,7 @@ Created: migrations/1674549369392-sample_migration_1.ts
 ````
 
 ### Checking the status of the migrations
-At any time, you can check which migrations are applied (or not). Pass the profile option when you want to run the command in specific environmeents(dev,int etc).
+At any time, you can check which migrations are applied (or not). Pass the profile option when you want to run the command in specific environments(dev,test etc).
 
 ````bash
 $ dynamo-data-migrations status --profile dev
