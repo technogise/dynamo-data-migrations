@@ -1,6 +1,6 @@
 ## Introduction
 
-`dynamo-data-migrations` is a database migration tool running in based on [migrate-mongo](https://github.com/seppevs/migrate-mongo), but with DynamoDb support. You can generate migration file with extension `.ts`, `.cjs` or `.mjs(ESM)` as per your source project language.
+`dynamo-data-migrations` is a database migration tool with DynamoDb support. You can generate migration file with extension `.ts`, `.cjs` or `.mjs(ESM)` as per your source project language.
 
 
 ## Installation
