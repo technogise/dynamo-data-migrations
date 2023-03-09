@@ -3,5 +3,5 @@ export const up = async (ddb) => {
   }
 
  export const down = async (ddb) => {
-    // TODO write the statements to rollback your migration (if possible)
+    // TODO write the statements to rollback your migration
   }
