@@ -61,13 +61,13 @@ $ dynamo-data-migrations status --profile dev
 ┌─────────────────────────────────────┬────────────┐
 │ Filename                            │ Applied At │
 ├─────────────────────────────────────┼────────────┤
-│ 1674549369392-sample_migration_1.ts │ PENDING    │
+│ 1674549369392-sample_migration_1.ts │ PENDING.   |   
 └─────────────────────────────────────┴────────────┘
 
 ````
 
 ### Migrate up
-This command will apply all pending migrations in the migrations dir picking up files in ascending order as per the name.
+This command will apply all **pending migrations** in the migrations dir picking up files in ascending order as per the name.
 If no profile is passed it will use AWS configuration from `default` profile.
 If this is the first time that `up` command is executing against a particular AWS account then it also creates a `MIGRATIONS_LOG` table in the selected AWS account if it does not exist.
 **If an an error occurred while migrating a particular file, it will stop and won't continue with the rest of the pending migrations.**
@@ -85,20 +85,21 @@ MIGRATED UP: 1674549369392-sample_migration_1.ts
 MIGRATED UP: 1674549369492-sample_migration_2.ts
 ````
 
-If we check the status again, we can see the last migration was successfully applied:
+If we check the status again, we can see the all the migrations was successfully applied:
 ````bash
 $ dynamo-data-migrations status
 ┌─────────────────────────────────────────┬──────────────────────────┐
 │ Filename                                │ Applied At               │
 ├─────────────────────────────────────────┼──────────────────────────┤
 │ 1674549369392-sample_migration_1.ts     │ 2016-06-08T20:13:30.415Z │
+│ 1674549369492-sample_migration_2.ts     │ 2016-06-08T20:13:35.415Z │
 └─────────────────────────────────────────┴──────────────────────────┘
 ````
 ### Migrate down
-With this command and without any parameters, dynamo-data-migrations will revert (only) the last applied migration.
-You can also pass the number of downshifts to be done i.e. you can perform upto last `n` installed migrations. If you want to migrate all the applied migrations pass the `shift` argumen wih value `0`
+With this command and without any parameters, dynamo-data-migrations will revert only the last applied migration.
+You can also pass the number of downshifts to be done i.e. you can rollback last `n` installed migrations. If you want to migrate all the applied migrations pass the `shift` argumen wih value `0`
 
-Below will revert las 2 applied migrations.
+Below will revert last 2 applied migrations.
 ````bash
 $ dynamo-data-migrations down --shift 2
 MIGRATED DOWN: 1674549369392-sample_migration_1.ts 
