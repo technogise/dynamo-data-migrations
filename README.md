@@ -48,6 +48,7 @@ The `config.json` generated during the `init` phase contains configuration infor
 
 ## Creating a new migration script
 To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. The file extension will be determined by the `migrationType` field value in `config.json`. The file will hold the signature of the `up` and `down` where migration details are to be specified.
+Templates are at : https://github.com/technogise/dynamo-data-migrations/tree/main/src/templates
 
 ````bash
 $ dynamo-data-migrations create sample_migration_1
