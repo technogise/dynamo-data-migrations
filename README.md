@@ -37,9 +37,11 @@ Commands:
     ```
 
 ## Editing config.json
-The `config.json` generated during the `init` phase conains configuration information as required to run the `up`, `down` and `satus` commands. Below is a brief description of the details specified in the file.
+The `config.json` generated during the `init` phase contains configuration information as required to run the `up`, `down` and `satus` commands. Below is a brief description of the details specified in the file.
    1. `awsConfig`: This section is used to store AWS credentials and region of the AWS account against which you want to execute the up/down/status commands.
-       You can specify multiple profiles, if profile is not specified it is considered as `default` profile. If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded as per the AWS CredentialProviderChain. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html). **Region is mandatory for each profile**. 
+       You can specify multiple profiles, if profile is not specified it is considered as `default` profile. **Region is mandatory for each profile**. 
+       If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded from AWS SharedCredentials file or from AWS environment variables. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html). 
+       
    2. `migrationsDir`: This value specifies the directory containing the migration files. By default during `init` phase `migrations` directory is created. If you want to use your own migration directory, specify the path (relative or absolute) in this section and **ensure the directory is created before executing any up/down/status command**.
    3. `migrationType` : Ensure a value from `ts`,`cjs` and `mjs` is provided here, based on which the migration script will be generated.
 
