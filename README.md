@@ -40,7 +40,7 @@ Commands:
 The `config.json` generated during the `init` phase contains configuration information as required to run the `up`, `down` and `satus` commands. Below is a brief description of the details specified in the file.
    1. `awsConfig`: This section is used to store AWS credentials and region of the AWS account against which you want to execute the up/down/status commands.
        You can specify multiple profiles, if profile is not specified it is considered as `default` profile. **Region is mandatory for each profile**. 
-       If `accessKeyId` and `secretAccessKey` are not provided, the credentials are loaded from AWS SharedCredentials file or from AWS environment variables. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html). 
+        `accessKeyId` and `secretAccessKey` are optional, if not provided the credentials are loaded from AWS SharedCredentials file or from AWS environment variables. For more information, refer [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html). 
        
    2. `migrationsDir`: This value specifies the directory containing the migration files. By default during `init` phase `migrations` directory is created. If you want to use your own migration directory, specify the path (relative or absolute) in this section and **ensure the directory is created before executing any up/down/status command**.
    3. `migrationType` : Ensure a value from `ts`,`cjs` and `mjs` is provided here, based on which the migration script will be generated.
@@ -71,7 +71,7 @@ $ dynamo-data-migrations status --profile dev
 ### Migrate up
 This command will apply all **pending migrations** in the migrations dir picking up files in ascending order as per the name.
 If no profile is passed it will use AWS configuration from `default` profile.
-If this is the first time that `up` command is executing against a particular AWS account then it also creates a `MIGRATIONS_LOG` table in the selected AWS account if it does not exist.
+If this is the first time that `up` command is executing against a particular AWS account then it also creates a `MIGRATIONS_LOG` table to hold the migrated entries. 
 **If an an error occurred while migrating a particular file, it will stop and won't continue with the rest of the pending migrations.**
 
 Example: For `default` profile
