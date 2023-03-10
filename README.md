@@ -1,6 +1,6 @@
 ## Introduction
 
-`dynamo-data-migrations` is a database migration tool with DynamoDb support. You can generate migration file with extension `.ts`, `.cjs` or `.mjs(ESM)` as per your source project language.
+`dynamo-data-migrations` is a database migration tool with DynamoDb support. It supports generation of migration file with extension `.ts`(TS projects), `.cjs`(CJS type JS projects) or `.mjs`(ESM type JS projects) as per source project language.
 
 
 ## Installation
@@ -47,7 +47,7 @@ The `config.json` generated during the `init` phase contains configuration infor
 
 
 ## Creating a new migration script
-To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. The file extension will be determined by the `migrationType` field value in `config.json`.
+To create a new database migration script, just run the ````dynamo-data-migrations create [description]```` command. This will create a file  with the current timestamp prefixed in the filename. The file extension will be determined by the `migrationType` field value in `config.json`. The file will hold the signature of the `up` and `down` where migration details are to be specified.
 
 ````bash
 $ dynamo-data-migrations create sample_migration_1
