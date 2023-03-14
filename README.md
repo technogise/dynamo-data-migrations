@@ -100,7 +100,7 @@ $ dynamo-data-migrations status
 ````
 ### Migrate down
 With this command and without any parameters, dynamo-data-migrations will revert only the last applied migration.
-You can also pass the number of downshifts to be done i.e. you can rollback last `n` installed migrations. If you want to migrate all the applied migrations pass the `shift` argumen wih value `0`
+You can also pass the number of downshifts to be done i.e. you can rollback last `n` installed migrations. If you want to rollback all applied migrations pass the `shift` argument wih value `0`
 
 Below will revert last 2 applied migrations.
 ````bash
