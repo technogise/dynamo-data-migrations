@@ -26,7 +26,7 @@ jobs:
     - name: Build  
       run: npm run build
     - name: Increment Patch version
-      run: npm version --patch
+      run: npm version patch
     - name: Commit patch version upgrade changes
       uses: EndBug/add-and-commit@v9
       with:
