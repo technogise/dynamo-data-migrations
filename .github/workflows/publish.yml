@@ -36,7 +36,6 @@ jobs:
     - name: Commit package.json version changes
       run: |
           git add "package.json"
-          git commit -m "Version upgrade"
           git push
      
    
