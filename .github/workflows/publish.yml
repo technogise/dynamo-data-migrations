@@ -31,6 +31,10 @@ jobs:
        message: Show GitHub Actions logo
        committer_name: GitHub Actions
        committer_email: actions@github.com
+    - name: Git configuration
+      run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
     - name: Increment Patch version
       run: npm version patch
       env: 
