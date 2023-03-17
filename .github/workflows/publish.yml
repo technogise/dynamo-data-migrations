@@ -33,5 +33,7 @@ jobs:
        committer_email: actions@github.com
     - name: Increment Patch version
       run: npm version patch
+      env: 
+        NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
    
  
