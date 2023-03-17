@@ -25,12 +25,6 @@ jobs:
       run: npm ci
     - name: Build  
       run: npm run build
-    - name: Setup git credentials
-      uses: EndBug/add-and-commit@v9
-      with:
-       message: Show GitHub Actions logo
-       committer_name: GitHub Actions
-       committer_email: actions@github.com
     - name: Git configuration
       run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -39,5 +33,11 @@ jobs:
       run: npm version patch
       env: 
         NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+    - name: Push changes
+      uses: EndBug/add-and-commit@v9
+      with:
+       message: Show GitHub Actions logo
+       committer_name: GitHub Actions
+       committer_email: actions@github.com
    
  
