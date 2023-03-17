@@ -1,8 +1,7 @@
 name: Publish Change
 
 on:
-  push:
-    branches: [ main ]
+  push
 
 jobs:
   publish:
@@ -26,7 +25,8 @@ jobs:
       run: npm ci
     - name: Build  
       run: npm run build
-   # - name: Publish
-   #  run: npm publish --access public
-   #  env: 
-   #  NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+    - name: Increment Patch version
+      run: npm version --patch
+            git add *;
+            git commit -m "Increment patch version after publish"
+            git push
