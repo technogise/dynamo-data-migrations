@@ -73,7 +73,7 @@ $ dynamo-data-migrations status --profile dev
 
 ### Migrate up
 This command will apply all **pending migrations** in the migrations dir picking up files in ascending order as per the name.
-If no profile is passed it will use AWS configuration from `default` profile.
+If no profile is passed it will use the `AWS_PROFILE` environment variable or the AWS configuration from the `default` profile.
 If this is the first time that `up` command is executing against a particular AWS account then it also creates a `MIGRATIONS_LOG` table to hold the migrated entries. 
 **If an an error occurred while migrating a particular file, it will stop and won't continue with the rest of the pending migrations.**
 
