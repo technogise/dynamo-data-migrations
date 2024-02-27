@@ -12,14 +12,14 @@ export const createAction = async (description: string) => {
     return create(description);
 };
 
-export const upAction = async (profile = 'default') => {
+export const upAction = async (profile = process.env.AWS_PROFILE ?? 'default') => {
     return up(profile);
 };
 
-export const downAction = async (profile = 'default', downShift = 1) => {
+export const downAction = async (profile = process.env.AWS_PROFILE ?? 'default', downShift = 1) => {
     return down(profile, downShift);
 };
 
-export const statusAction = async (profile = 'default') => {
+export const statusAction = async (profile = process.env.AWS_PROFILE ?? 'default') => {
     return status(profile);
 };
