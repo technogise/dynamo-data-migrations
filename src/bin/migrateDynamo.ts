@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { program } from 'commander';
+import { Option, program } from 'commander';
 import Table from 'cli-table3';
 import _, { isEmpty } from 'lodash';
 import packageJson from '../../package.json';
@@ -23,6 +23,9 @@ function printStatusTable(statusItems: { fileName: string; appliedAt: string }[]
     );
     console.info(table.toString());
 }
+const profileOption = new Option('--profile <string>', 'AWS credentials and configuration to be used')
+    .env('AWS_PROFILE')
+    .default('default');
 
 program
     .command('init')
@@ -50,7 +53,7 @@ program
 
 program
     .command('up')
-    .option('--profile <string>', 'AWS credentials and configuration to be used', 'default')
+    .addOption(profileOption)
     .description('run all pending database migrations against a provided profile.')
     .action(async (option) => {
         try {
@@ -65,7 +68,7 @@ program
 
 program
     .command('down')
-    .option('--profile <string>', 'AWS credentials and configuration to be used', 'default')
+    .addOption(profileOption)
     .option(
         '--shift <n>',
         'Number of down shift to perform. 0 will rollback all changes',
@@ -84,7 +87,7 @@ program
 
 program
     .command('status')
-    .option('--profile <string>', 'AWS credentials and configuration to be used', 'default')
+    .addOption(profileOption)
     .description('print the changelog of the database against a provided profile')
     .action(async (option) => {
         try {
